@@ -5,5 +5,5 @@ kind: Kustomization
 # list of resources to be Applied
 resources:
 - waypoint-per-namespace.yaml
-- hpa-per-namespace.yaml
-- pdb.yaml
+#- hpa-per-namespace.yaml
+#- pdb.yaml

@@ -1,5 +1,25 @@
 # Ambient Performance Test Setup
 
+## Label 3 nodes that will run the vegeta traffic generator
+```bash
+# Use 4 nodes for 30-ns, 5 nodes for 50-ns
+NODE1=gke-gke-ambient-danehans-default-pool-2db4b5fe-1s6x
+NODE2=gke-gke-ambient-danehans-default-pool-2db4b5fe-6nqf
+NODE3=gke-gke-ambient-danehans-default-pool-2db4b5fe-74l2
+NODE4=gke-gke-ambient-danehans-default-pool-2db4b5fe-1yg3
+NODE5=gke-gke-ambient-danehans-default-pool-2db4b5fe-24z6
+kubectl label node/$NODE1 node/$NODE2 node/$NODE3 node/$NODE4 node/$NODE5 node=loadgen
+```
+
+Taint the load gen nodes:
+```bash
+for node in $(kubectl get nodes -l node=loadgen -o name); do
+  kubectl taint nodes $node loadgen=true:NoSchedule
+done
+```
+
+__Note:__ The load gen deployment will add a toleration to the load testing pods.
+
 ## add ambient helm repo
 ```bash
 helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -8,7 +28,7 @@ helm repo update
 
 ## install istio-base
 ```bash
-helm upgrade --install istio-base istio/base -n istio-system --version 1.22.0 --create-namespace
+helm upgrade --install istio-base istio/base -n istio-system --version 1.22.1 --create-namespace
 ```
 
 ## install Kubernetes Gateway CRDs
@@ -23,7 +43,7 @@ kubectl get crd gateways.gateway.networking.k8s.io &> /dev/null || \
 ```bash
 helm upgrade --install istio-cni istio/cni \
 -n kube-system \
---version=1.22.0 \
+--version=1.22.1 \
 -f -<<EOF
 profile: ambient
 # uncomment below if using GKE
@@ -41,7 +61,7 @@ kubectl rollout status ds/istio-cni-node -n kube-system
 ```bash
 helm upgrade --install istiod istio/istiod \
 -n istio-system \
---version=1.22.0 \
+--version=1.22.1 \
 -f -<<EOF
 profile: ambient
 EOF
@@ -58,10 +78,10 @@ For GKE, ztunnel is expected to be deployed in `kube-system`
 ```bash
 helm upgrade --install ztunnel istio/ztunnel \
 -n kube-system \
---version=1.22.0 \
+--version=1.22.1 \
 -f -<<EOF
 hub: docker.io/istio
-tag: 1.22.0
+tag: 1.22.1
 resources:
   requests:
       cpu: 500m
@@ -83,17 +103,27 @@ kubectl rollout status ds/ztunnel -n kube-system
 kubectl apply -k client/ambient
 ```
 
+Wait for the client rollout to complete
+```bash
+kubectl rollout status deploy/sleep -n client
+```
+
 ## deploy httpbin into ambient mesh
 ```bash
 kubectl apply -k httpbin/ambient
 ```
 
-## exec into sleep client and curl httpbin
+Wait for the httpbin rollout to complete
 ```bash
-kubectl exec -it deploy/sleep -n client -c sleep sh
-
-curl httpbin.httpbin.svc.cluster.local:8000/get
+kubectl rollout status deploy/httpbin -n httpbin
 ```
+
+## curl httpbin from the client
+```bash
+kubectl exec deploy/sleep -n client -- sh -c "curl -s -o /dev/null -w '%{http_code}' httpbin.httpbin.svc.cluster.local:8000/get; echo"
+```
+
+You should receive a `200` HTTP status code.
 
 ## watch logs of ztunnel for traffic interception
 
@@ -108,20 +138,41 @@ kubectl logs -n kube-system ds/ztunnel -f
 kubectl delete -k httpbin/ambient
 ```
 
-
 # Set up the Performance Test
 
-## deploy 50 namespace tiered-app into ambient mesh
+## Set the scale of the test:
 ```bash
-kubectl apply -k tiered-app/50-namespace-app/ambient
+# Options are 1, 5, 20, 30, 50
+NUM=30
 ```
 
-## exec into sleep client and curl tiered-app
+## deploy the namespace tiered-app into ambient mesh
 ```bash
-kubectl exec -it deploy/sleep -n client sh
-
-curl http://tier-1-app-a.ns-1.svc.cluster.local:8080
+kubectl apply -k tiered-app/$NUM-namespace-app/ambient
 ```
+
+Wait for the tiered app rollout to complete
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/tier-1-app-a -n ns-$i
+done
+```
+
+## curl each instance of the tiered app from the client
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl exec deploy/sleep -n client -- sh -c "curl -s -o /dev/null -w '%{http_code}' http://tier-1-app-a.ns-$i.svc.cluster.local:8080; echo"
+done
+```
+
+## Verify that the tierd app was not scheduled to the loadgen nodes:
+```bash
+kubectl get po -A -o wide | grep $NODE1
+kubectl get po -A -o wide | grep $NODE2
+kubectl get po -A -o wide | grep $NODE3
+```
+
+You should receive a `200` HTTP status code for each app instance.
 
 ## watch logs of ztunnel for traffic interception
 ```bash
@@ -135,9 +186,16 @@ Output should look similar to below, note you can see the spiffe ID of client sl
 2024-03-07T00:45:14.377121Z  INFO inbound{id=1c8da768ba34c2eba072911c6a17b892 peer_ip=10.32.1.7 peer_id=spiffe://cluster.local/ns/client/sa/sleep}: ztunnel::proxy::inbound: got CONNECT request to 10.32.3.6:80
 ```
 
-## deploy 50 vegeta loadgenerators
+## deploy the vegeta loadgenerators
 ```bash
-kubectl apply -k loadgenerators/50-loadgenerators
+kubectl apply -k loadgenerators/$NUM-loadgenerators
+```
+
+Wait for the loadgenerators rollout to complete
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/vegeta-ns-$i -n ns-$i
+done
 ```
 
 ## watch logs of vegeta loadgenerator
@@ -170,27 +228,38 @@ cd experiment-data
 
 ## configure l4 auth policy
 ```bash
-kubectl apply -k tiered-app/50-namespace-app/ambient/l4-policy
+kubectl apply -k tiered-app/$NUM-namespace-app/ambient/l4-policy
 ```
 
 ## configure waypoint proxy per namespace
 ```bash
-kubectl apply -k tiered-app/50-namespace-app/ambient/waypoints
+kubectl apply -k tiered-app/$NUM-namespace-app/ambient/waypoints
 ```
 
 ## configure l7 auth policy
 ```bash
-kubectl apply -k tiered-app/50-namespace-app/ambient/l7-policy
+kubectl apply -k tiered-app/$NUM-namespace-app/ambient/l7-policy
 ```
 
 ## example exec into vegeta to run your own test (optional)
 ```bash
-kubectl --namespace ns-1 exec -it deploy/vegeta -c vegeta -- /bin/sh
+kubectl --namespace ns-1 exec -it deploy/vegeta-ns-1 -c vegeta -- /bin/sh
 ```
 
 test run:
 ```bash
 echo "GET http://tier-1-app-a.ns-1.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-5.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-6.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-10.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-11.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-20.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
 ```
 
 ## deploy sample addons (optional)

@@ -64,12 +64,10 @@ patches:
     spec:
       template:
         spec:
-          nodeSelector:
-            node: loadgen
           tolerations:
-          - key: cloud.google.com/node
-            operator: Equal
-            value: "loadgen"
-            effect: NoSchedule
+          - key: "loadgen"
+            operator: "Equal"
+            value: "true"
+            effect: "NoSchedule"
   target:
     kind: Deployment

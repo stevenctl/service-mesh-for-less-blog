@@ -4,13 +4,18 @@
 
 Set the following variables for cluster name, zone, machine type, number of nodes, k8s version, and the target GKE project
 ```
-GKE_CLUSTER_NAME="gke-ambient-1"
+GKE_CLUSTER_NAME="gke-ambient-danehans"
 GKE_CLUSTER_ZONE="us-west4-b"
 MAIN_MACHINE_TYPE="n2-standard-8"
-MAIN_NUM_NODES=""
-GKE_PROJECT=""
-CLUSTER_VERSION="1.29.1-gke.1589020"
+MAIN_NUM_NODES="26"
+GKE_PROJECT="solo-oss"
+CLUSTER_VERSION="1.29.4-gke.1043002"
 ```
+
+__Note:__ 26 nodes are required when using 50 namespaces. 5 nodes are labeled `node=loadgen` to run the vegeta traffic generator
+and 21 nodes are for running the tiered app test workload.
+
+30 nodes and taints/tolerations are needed when waypoints use 512m CPU.
 
 # Create Cluster
 
@@ -24,6 +29,7 @@ gcloud container clusters create ${GKE_CLUSTER_NAME} \
   --zone ${GKE_CLUSTER_ZONE} \
   --project ${GKE_PROJECT} \
   --logging NONE \
+  --no-enable-autoscaling \
   --spot
 ```
 
@@ -33,7 +39,7 @@ gcloud container clusters create ${GKE_CLUSTER_NAME} \
 
 Set the following node pool variables for autoscaling, node labels, and taints
 ```
-GKE_NODE_POOL_NAME="gke-ambient-1-lg-spot-8cpu"
+GKE_NODE_POOL_NAME="gke-ambient-danehans-lg-spot-8cpu"
 POOL_MACHINE_TYPE="n2-standard-8"
 POOL_NUM_NODES="5"
 POOL_MIN_NODES="1"

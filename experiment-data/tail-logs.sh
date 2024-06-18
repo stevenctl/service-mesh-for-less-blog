@@ -5,7 +5,7 @@ start_namespace=1
 end_namespace=50
 
 # Define the output file
-output_file="450rps-10m-50-app-linkerd-l4auth-run-data-run-1.md"
+output_file="450rps-10m-50-app-ambient-l7-auth-2-waypoint-replica-256-cpu-run-1-5sec-sleep.md"
 
 # Define label selector for pods
 label_selector="app=vegeta"  # Modify this label selector as per your requirement

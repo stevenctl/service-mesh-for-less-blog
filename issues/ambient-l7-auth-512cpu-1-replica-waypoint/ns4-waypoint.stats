@@ -1,0 +1,240 @@
+cluster_manager.cds.version_text: "2024-06-24T20:28:39Z/1454"
+listener_manager.lds.version_text: "2024-06-24T20:28:39Z/1454"
+workload_discovery.version_text: "2024-06-24T20:28:39Z/1454"
+cluster.xds-grpc.assignment_stale: 0
+cluster.xds-grpc.assignment_timeout_received: 0
+cluster.xds-grpc.assignment_use_cached: 0
+cluster.xds-grpc.bind_errors: 0
+cluster.xds-grpc.circuit_breakers.default.cx_open: 0
+cluster.xds-grpc.circuit_breakers.default.cx_pool_open: 0
+cluster.xds-grpc.circuit_breakers.default.rq_open: 0
+cluster.xds-grpc.circuit_breakers.default.rq_pending_open: 0
+cluster.xds-grpc.circuit_breakers.default.rq_retry_open: 0
+cluster.xds-grpc.circuit_breakers.high.cx_open: 0
+cluster.xds-grpc.circuit_breakers.high.cx_pool_open: 0
+cluster.xds-grpc.circuit_breakers.high.rq_open: 0
+cluster.xds-grpc.circuit_breakers.high.rq_pending_open: 0
+cluster.xds-grpc.circuit_breakers.high.rq_retry_open: 0
+cluster.xds-grpc.default.total_match_count: 1
+cluster.xds-grpc.http2.deferred_stream_close: 0
+cluster.xds-grpc.http2.dropped_headers_with_underscores: 0
+cluster.xds-grpc.http2.goaway_sent: 0
+cluster.xds-grpc.http2.header_overflow: 0
+cluster.xds-grpc.http2.headers_cb_no_stream: 0
+cluster.xds-grpc.http2.inbound_empty_frames_flood: 0
+cluster.xds-grpc.http2.inbound_priority_frames_flood: 0
+cluster.xds-grpc.http2.inbound_window_update_frames_flood: 0
+cluster.xds-grpc.http2.keepalive_timeout: 0
+cluster.xds-grpc.http2.metadata_empty_frames: 0
+cluster.xds-grpc.http2.outbound_control_flood: 0
+cluster.xds-grpc.http2.outbound_control_frames_active: 0
+cluster.xds-grpc.http2.outbound_flood: 0
+cluster.xds-grpc.http2.outbound_frames_active: 0
+cluster.xds-grpc.http2.pending_send_bytes: 0
+cluster.xds-grpc.http2.requests_rejected_with_underscores_in_headers: 0
+cluster.xds-grpc.http2.rx_messaging_error: 0
+cluster.xds-grpc.http2.rx_reset: 0
+cluster.xds-grpc.http2.stream_refused_errors: 0
+cluster.xds-grpc.http2.streams_active: 1
+cluster.xds-grpc.http2.trailers: 0
+cluster.xds-grpc.http2.tx_flush_timeout: 0
+cluster.xds-grpc.http2.tx_reset: 0
+cluster.xds-grpc.internal.upstream_rq_200: 2
+cluster.xds-grpc.internal.upstream_rq_2xx: 2
+cluster.xds-grpc.internal.upstream_rq_completed: 2
+cluster.xds-grpc.lb_healthy_panic: 0
+cluster.xds-grpc.lb_local_cluster_not_ok: 0
+cluster.xds-grpc.lb_recalculate_zone_structures: 0
+cluster.xds-grpc.lb_subsets_active: 0
+cluster.xds-grpc.lb_subsets_created: 0
+cluster.xds-grpc.lb_subsets_fallback: 0
+cluster.xds-grpc.lb_subsets_fallback_panic: 0
+cluster.xds-grpc.lb_subsets_removed: 0
+cluster.xds-grpc.lb_subsets_selected: 0
+cluster.xds-grpc.lb_zone_cluster_too_small: 0
+cluster.xds-grpc.lb_zone_no_capacity_left: 0
+cluster.xds-grpc.lb_zone_number_differs: 0
+cluster.xds-grpc.lb_zone_routing_all_directly: 0
+cluster.xds-grpc.lb_zone_routing_cross_zone: 0
+cluster.xds-grpc.lb_zone_routing_sampled: 0
+cluster.xds-grpc.max_host_weight: 0
+cluster.xds-grpc.membership_change: 1
+cluster.xds-grpc.membership_degraded: 0
+cluster.xds-grpc.membership_excluded: 0
+cluster.xds-grpc.membership_healthy: 1
+cluster.xds-grpc.membership_total: 1
+cluster.xds-grpc.original_dst_host_invalid: 0
+cluster.xds-grpc.retry_or_shadow_abandoned: 0
+cluster.xds-grpc.update_attempt: 0
+cluster.xds-grpc.update_empty: 0
+cluster.xds-grpc.update_failure: 0
+cluster.xds-grpc.update_no_rebuild: 0
+cluster.xds-grpc.update_success: 0
+cluster.xds-grpc.upstream_cx_active: 1
+cluster.xds-grpc.upstream_cx_close_notify: 0
+cluster.xds-grpc.upstream_cx_connect_attempts_exceeded: 0
+cluster.xds-grpc.upstream_cx_connect_fail: 0
+cluster.xds-grpc.upstream_cx_connect_timeout: 0
+cluster.xds-grpc.upstream_cx_connect_with_0_rtt: 0
+cluster.xds-grpc.upstream_cx_destroy: 1
+cluster.xds-grpc.upstream_cx_destroy_local: 1
+cluster.xds-grpc.upstream_cx_destroy_local_with_active_rq: 0
+cluster.xds-grpc.upstream_cx_destroy_remote: 0
+cluster.xds-grpc.upstream_cx_destroy_remote_with_active_rq: 0
+cluster.xds-grpc.upstream_cx_destroy_with_active_rq: 0
+cluster.xds-grpc.upstream_cx_http1_total: 0
+cluster.xds-grpc.upstream_cx_http2_total: 2
+cluster.xds-grpc.upstream_cx_http3_total: 0
+cluster.xds-grpc.upstream_cx_idle_timeout: 0
+cluster.xds-grpc.upstream_cx_max_duration_reached: 0
+cluster.xds-grpc.upstream_cx_max_requests: 2
+cluster.xds-grpc.upstream_cx_none_healthy: 0
+cluster.xds-grpc.upstream_cx_overflow: 0
+cluster.xds-grpc.upstream_cx_pool_overflow: 0
+cluster.xds-grpc.upstream_cx_protocol_error: 1
+cluster.xds-grpc.upstream_cx_rx_bytes_buffered: 17
+cluster.xds-grpc.upstream_cx_rx_bytes_total: 2127019
+cluster.xds-grpc.upstream_cx_total: 2
+cluster.xds-grpc.upstream_cx_tx_bytes_buffered: 0
+cluster.xds-grpc.upstream_cx_tx_bytes_total: 8408882
+cluster.xds-grpc.upstream_flow_control_backed_up_total: 0
+cluster.xds-grpc.upstream_flow_control_drained_total: 0
+cluster.xds-grpc.upstream_flow_control_paused_reading_total: 0
+cluster.xds-grpc.upstream_flow_control_resumed_reading_total: 0
+cluster.xds-grpc.upstream_http3_broken: 0
+cluster.xds-grpc.upstream_internal_redirect_failed_total: 0
+cluster.xds-grpc.upstream_internal_redirect_succeeded_total: 0
+cluster.xds-grpc.upstream_rq_0rtt: 0
+cluster.xds-grpc.upstream_rq_200: 2
+cluster.xds-grpc.upstream_rq_2xx: 2
+cluster.xds-grpc.upstream_rq_active: 1
+cluster.xds-grpc.upstream_rq_cancelled: 0
+cluster.xds-grpc.upstream_rq_completed: 2
+cluster.xds-grpc.upstream_rq_maintenance_mode: 0
+cluster.xds-grpc.upstream_rq_max_duration_reached: 0
+cluster.xds-grpc.upstream_rq_pending_active: 0
+cluster.xds-grpc.upstream_rq_pending_failure_eject: 0
+cluster.xds-grpc.upstream_rq_pending_overflow: 0
+cluster.xds-grpc.upstream_rq_pending_total: 2
+cluster.xds-grpc.upstream_rq_per_try_idle_timeout: 0
+cluster.xds-grpc.upstream_rq_per_try_timeout: 0
+cluster.xds-grpc.upstream_rq_retry: 0
+cluster.xds-grpc.upstream_rq_retry_backoff_exponential: 0
+cluster.xds-grpc.upstream_rq_retry_backoff_ratelimited: 0
+cluster.xds-grpc.upstream_rq_retry_limit_exceeded: 0
+cluster.xds-grpc.upstream_rq_retry_overflow: 0
+cluster.xds-grpc.upstream_rq_retry_success: 0
+cluster.xds-grpc.upstream_rq_rx_reset: 0
+cluster.xds-grpc.upstream_rq_timeout: 0
+cluster.xds-grpc.upstream_rq_total: 2
+cluster.xds-grpc.upstream_rq_tx_reset: 1
+cluster.xds-grpc.version: 0
+cluster.xds-grpc.warming_state: 0
+cluster.xds-grpc.zone.us-west4-b..upstream_rq_200: 2
+cluster.xds-grpc.zone.us-west4-b..upstream_rq_2xx: 2
+cluster.xds-grpc.zone.us-west4-b..upstream_rq_completed: 2
+cluster_manager.active_clusters: 14
+cluster_manager.cds.init_fetch_timeout: 0
+cluster_manager.cds.update_attempt: 66
+cluster_manager.cds.update_failure: 1
+cluster_manager.cds.update_rejected: 0
+cluster_manager.cds.update_success: 64
+cluster_manager.cds.update_time: 1719262558675
+cluster_manager.cds.version: 2005215914940334361
+cluster_manager.cluster_added: 14
+cluster_manager.cluster_modified: 0
+cluster_manager.cluster_removed: 0
+cluster_manager.cluster_updated: 21
+cluster_manager.cluster_updated_via_merge: 0
+cluster_manager.update_merge_cancelled: 0
+cluster_manager.update_out_of_merge_window: 0
+cluster_manager.warming_clusters: 0
+istiocustom.istio_build.component.proxy.tag.1.22.1: 1
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.destination_app.tier-2-app-a.destination_version.latest.destination_service.tier-2-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-a.destination_canonical_revision.latest.destination_service_name.tier-2-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 755160
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-b-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.destination_app.tier-2-app-b.destination_version.latest.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-b.destination_canonical_revision.latest.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 755098
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.unknown.destination_workload_namespace.unknown.destination_principal.unknown.destination_app.unknown.destination_version.unknown.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.unknown.destination_canonical_revision.unknown.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.0.grpc_response_status.response_flags.DC.connection_security_policy.mutual_tls: 2
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.tier-2-app-a-v1.source_canonical_service.tier-2-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.source_app.tier-2-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 755168
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.tier-2-app-b-v1.source_canonical_service.tier-2-app-b.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.source_app.tier-2-app-b.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 755110
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 755098
+istiocustom.istio_requests_total.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.500.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: 2
+listener_manager.lds.init_fetch_timeout: 0
+listener_manager.lds.update_attempt: 66
+listener_manager.lds.update_failure: 1
+listener_manager.lds.update_rejected: 0
+listener_manager.lds.update_success: 64
+listener_manager.lds.update_time: 1719262558704
+listener_manager.lds.version: 2005215914940334361
+listener_manager.listener_added: 5
+listener_manager.listener_create_failure: 0
+listener_manager.listener_create_success: 12
+listener_manager.listener_in_place_updated: 1
+listener_manager.listener_modified: 1
+listener_manager.listener_removed: 0
+listener_manager.listener_stopped: 0
+listener_manager.total_filter_chains_draining: 0
+listener_manager.total_listeners_active: 5
+listener_manager.total_listeners_draining: 0
+listener_manager.total_listeners_warming: 0
+listener_manager.workers_started: 1
+server.compilation_settings.fips_mode: 0
+server.concurrency: 2
+server.days_until_first_cert_expiring: 0
+server.debug_assertion_failures: 0
+server.dropped_stat_flushes: 0
+server.dynamic_unknown_fields: 0
+server.envoy_bug_failures: 0
+server.hot_restart_epoch: 0
+server.live: 1
+server.main_thread.watchdog_mega_miss: 0
+server.main_thread.watchdog_miss: 0
+server.memory_allocated: 34583024
+server.memory_heap_size: 67108864
+server.memory_physical_size: 71901662
+server.parent_connections: 0
+server.seconds_until_first_ocsp_response_expiring: 0
+server.state: 0
+server.static_unknown_fields: 1
+server.stats_recent_lookups: 2583
+server.total_connections: 712
+server.uptime: 2664
+server.version: 15738178
+server.wip_protos: 146
+server.worker_0.watchdog_mega_miss: 0
+server.worker_0.watchdog_miss: 0
+server.worker_1.watchdog_mega_miss: 0
+server.worker_1.watchdog_miss: 0
+workload_discovery.init_fetch_timeout: 0
+workload_discovery.total: 376
+workload_discovery.update_attempt: 66
+workload_discovery.update_failure: 1
+workload_discovery.update_rejected: 0
+workload_discovery.update_success: 64
+workload_discovery.update_time: 1719262558702
+workload_discovery.version: 2005215914940334361
+cluster.xds-grpc.upstream_cx_connect_ms: P0(nan,1) P25(nan,1.05) P50(nan,1.1) P75(nan,5.05) P90(nan,5.08) P95(nan,5.09) P99(nan,5.098) P99.5(nan,5.099) P99.9(nan,5.0998) P100(nan,5.1)
+cluster.xds-grpc.upstream_cx_length_ms: P0(nan,1700000) P25(nan,1725000) P50(nan,1750000) P75(nan,1775000) P90(nan,1790000) P95(nan,1795000) P99(nan,1799000) P99.5(nan,1799500) P99.9(nan,1799900) P100(nan,1800000)
+cluster_manager.cds.update_duration: P0(nan,0) P25(nan,0) P50(nan,0) P75(nan,0) P90(nan,0) P95(nan,0) P99(nan,2.068) P99.5(nan,2.084) P99.9(nan,2.0968) P100(nan,2.1)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.destination_app.tier-2-app-a.destination_version.latest.destination_service.tier-2-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-a.destination_canonical_revision.latest.destination_service_name.tier-2-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(190,190) P25(202.3414477898783,202.45972627581725) P50(204.89429852658552,204.97315085054484) P75(207.44714926329277,207.4865754252724) P90(208.9788597053171,208.99463017010896) P95(209.48942985265856,209.49731508505448) P99(209.89788597053172,209.8994630170109) P99.5(209.94894298526586,209.94973150850544) P99.9(209.98978859705318,209.98994630170108) P100(210,210)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-b-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.destination_app.tier-2-app-b.destination_version.latest.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-b.destination_canonical_revision.latest.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(190,190) P25(202.3641474078701,202.45976611286127) P50(204.9094316052467,204.97317740857417) P75(207.45471580262335,207.4865887042871) P90(208.98188632104933,208.99463548171482) P95(209.49094316052467,209.49731774085743) P99(209.89818863210493,209.89946354817147) P99.5(209.94909431605248,209.94973177408573) P99.9(209.9898188632105,209.98994635481714) P100(210,210)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.unknown.destination_workload_namespace.unknown.destination_principal.unknown.destination_app.unknown.destination_version.unknown.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.unknown.destination_canonical_revision.unknown.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.0.grpc_response_status.response_flags.DC.connection_security_policy.mutual_tls: P0(nan,200) P25(nan,202.5) P50(nan,205) P75(nan,207.5) P90(nan,209) P95(nan,209.5) P99(nan,209.9) P99.5(nan,209.95) P99.9(nan,209.99) P100(nan,210)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.tier-2-app-a-v1.source_canonical_service.tier-2-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.source_app.tier-2-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(190,190) P25(202.34134615384616,202.45972627581725) P50(204.89423076923077,204.97315085054484) P75(207.4471153846154,207.4865754252724) P90(208.97884615384615,208.99463017010896) P95(209.4894230769231,209.49731508505448) P99(209.8978846153846,209.8994630170109) P99.5(209.9489423076923,209.94973150850544) P99.9(209.98978846153847,209.98994630170108) P100(210,210)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.tier-2-app-b-v1.source_canonical_service.tier-2-app-b.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.source_app.tier-2-app-b.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(190,190) P25(202.34154929577466,202.45972627581725) P50(204.8943661971831,204.97315085054484) P75(207.44718309859155,207.4865754252724) P90(208.9788732394366,208.99463017010896) P95(209.4894366197183,209.49731508505448) P99(209.89788732394365,209.8994630170109) P99.5(209.94894366197184,209.94973150850544) P99.9(209.98978873239437,209.98994630170108) P100(210,210)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(130,130) P25(142.37383177570092,142.4957562883789) P50(144.9158878504673,144.99717085891928) P75(147.45794392523365,147.49858542945964) P90(148.98317757009346,148.99943417178386) P95(149.49158878504673,149.49971708589192) P99(149.89831775700935,149.89994341717838) P99.5(149.94915887850468,149.9499717085892) P99.9(149.98983177570094,149.98999434171785) P100(150,150)
+istiocustom.istio_request_bytes.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.500.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(nan,140) P25(nan,142.5) P50(nan,145) P75(nan,147.5) P90(nan,149) P95(nan,149.5) P99(nan,149.9) P99.5(nan,149.95) P99.9(nan,149.99) P100(nan,150)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.destination_app.tier-2-app-a.destination_version.latest.destination_service.tier-2-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-a.destination_canonical_revision.latest.destination_service_name.tier-2-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(6,1) P25(61.22727272727273,40.20382210855357) P50(89.60714285714286,82.14548750238504) P75(119.29104477611942,122.10669415541288) P90(150.8571428571429,184.0353754940712) P95(170.71875,277.6329537014111) P99(190.59999999999945,364.3983196721309) P99.5(212.75454545454542,383.7329977628633) P99.9(218.55090909090904,417.8905605381164) P100(220,500.00000000000006)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-b-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.destination_app.tier-2-app-b.destination_version.latest.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-b.destination_canonical_revision.latest.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(1,1) P25(54.625,37.225734447004605) P50(84.66666666666667,80.03046800382045) P75(115.34965034965036,119.81146901878611) P90(147.10526315789474,186.15874855156432) P95(164.67741935483872,299.1374128396249) P99(195.63157894736844,379.14409862570733) P99.5(199.9210526315789,398.6159916617034) P99.9(209.09999999999985,428.5572837632784) P100(220,570)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.unknown.destination_workload_namespace.unknown.destination_principal.unknown.destination_app.unknown.destination_version.unknown.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.unknown.destination_canonical_revision.unknown.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.0.grpc_response_status.response_flags.DC.connection_security_policy.mutual_tls: P0(nan,380) P25(nan,385) P50(nan,390) P75(nan,395) P90(nan,398) P95(nan,399) P99(nan,399.8) P99.5(nan,399.9) P99.9(nan,399.98) P100(nan,400)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.tier-2-app-a-v1.source_canonical_service.tier-2-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.source_app.tier-2-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(0,0) P25(10.802631578947368,4.048227299298519) P50(25.616666666666667,15.080743316670288) P75(36.87980769230769,28.52180118880025) P90(44.81470588235294,39.62020024353944) P95(50.7642857142857,46.3783134000488) P99(67.907,59.5124669187145) P99.5(82.03500000000008,64.62178015564197) P99.9(97.70349999999996,75.75717968749996) P100(99,110)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.tier-2-app-b-v1.source_canonical_service.tier-2-app-b.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.source_app.tier-2-app-b.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(0,0) P25(8.067682926829269,4.03782227020937) P50(21.867346938775512,14.79070910190505) P75(33.203125,28.45863704052042) P90(44.46551724137931,39.42904667981591) P95(52.375,46.088372389200195) P99(81.01666666666665,59.74702330508469) P99.5(87.17083333333335,65.05427551020402) P99.9(88.70249999999999,75.98308130081297) P100(110,120.00000000000001)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(29,5) P25(227.34375000000003,246.07520104671943) P50(289.1111111111111,297.45962557218536) P75(348.0952380952381,351.6599958052225) P90(399.4358974358974,402.4704361196534) P95(449.66666666666663,435.55317745803353) P99(532.6800000000001,517.028888888889) P99.5(541.6799999999998,572.8860047846892) P99.9(557.8933333333331,674.5523417721535) P100(570,1200)
+istiocustom.istio_request_duration_milliseconds.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.500.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(nan,1000) P25(nan,1025) P50(nan,1050) P75(nan,1075) P90(nan,1090) P95(nan,1095) P99(nan,1099) P99.5(nan,1099.5) P99.9(nan,1099.9) P100(nan,1100)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.destination_app.tier-2-app-a.destination_version.latest.destination_service.tier-2-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-a.destination_canonical_revision.latest.destination_service_name.tier-2-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(1100,1100) P25(1222.0156555772994,1218.3971460437128) P50(1248.010437051533,1245.5980973624753) P75(1274.0052185257664,1272.7990486812375) P90(1289.6020874103067,1289.119619472495) P95(1294.8010437051532,1294.5598097362474) P99(1298.9602087410306,1298.9119619472494) P99.5(1299.4801043705154,1299.4559809736247) P99.9(1299.896020874103,1299.891196194725) P100(1300,1300)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-2-app-b-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.destination_app.tier-2-app-b.destination_version.latest.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.tier-2-app-b.destination_canonical_revision.latest.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(1100,1100) P25(1221.4836223506743,1218.633458047052) P50(1247.655748233783,1245.7556386980348) P75(1273.8278741168915,1272.8778193490175) P90(1289.5311496467566,1289.1511277396069) P95(1294.7655748233783,1294.5755638698035) P99(1298.9531149646757,1298.9151127739608) P99.5(1299.4765574823377,1299.4575563869803) P99.9(1299.8953114964675,1299.8915112773961) P100(1300,1300)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.tier-1-app-a.source_canonical_service.tier-1-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.source_app.tier-1-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.unknown.destination_workload_namespace.unknown.destination_principal.unknown.destination_app.unknown.destination_version.unknown.destination_service.tier-2-app-b.ns-4.svc.cluster.local.destination_canonical_service.unknown.destination_canonical_revision.unknown.destination_service_name.tier-2-app-b.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.0.grpc_response_status.response_flags.DC.connection_security_policy.mutual_tls: P0(nan,0) P25(nan,0) P50(nan,0) P75(nan,0) P90(nan,0) P95(nan,0) P99(nan,0) P99.5(nan,0) P99.9(nan,0) P100(nan,0)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.tier-2-app-a-v1.source_canonical_service.tier-2-app-a.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-a.source_app.tier-2-app-a.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(480,480) P25(490.04375000000005,486.80822345167854) P50(493.36250000000007,492.0985720355035) P75(496.68125000000003,496.0492860177518) P90(498.67250000000007,498.41971440710074) P95(499.33625000000006,499.2098572035504) P99(499.86725000000007,499.84197144071015) P99.5(499.93362500000006,499.9209857203551) P99.9(499.98672500000004,499.98419714407106) P100(500.00000000000006,500.00000000000006)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.tier-2-app-b-v1.source_canonical_service.tier-2-app-b.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/tier-2-app-b.source_app.tier-2-app-b.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-3-app-a-v1.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-3-app-a.destination_app.tier-3-app-a.destination_version.latest.destination_service.tier-3-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-3-app-a.destination_canonical_revision.latest.destination_service_name.tier-3-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(480,480) P25(489.6783980582524,486.62084597443135) P50(493.2586644125106,491.96664226773856) P75(496.62933220625536,495.9833211338693) P90(498.6517328825022,498.3933284535478) P95(499.3258664412511,499.1966642267739) P99(499.8651732882503,499.8393328453548) P99.5(499.93258664412514,499.91966642267744) P99.9(499.9865173288251,499.9839332845355) P100(500.00000000000006,500.00000000000006)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.200.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(3500,3400) P25(3525,3524.9993046965433) P50(3550,3549.999536464362) P75(3575,3574.999768232181) P90(3590,3589.999907292872) P95(3595,3594.999953646436) P99(3599,3598.999990729287) P99.5(3599.5,3599.499995364644) P99.9(3599.9,3599.899999072929) P100(3600,3600)
+istiocustom.istio_response_bytes.reporter.waypoint.source_workload.vegeta-ns-4.source_canonical_service.vegeta.source_canonical_revision.latest.source_workload_namespace.ns-4.source_principal.spiffe://cluster.local/ns/ns-4/sa/vegeta.source_app.vegeta.source_version.latest.source_cluster.Kubernetes.destination_workload.tier-1-app-a.destination_workload_namespace.ns-4.destination_principal.spiffe://cluster.local/ns/ns-4/sa/tier-1-app-a.destination_app.tier-1-app-a.destination_version.latest.destination_service.tier-1-app-a.ns-4.svc.cluster.local.destination_canonical_service.tier-1-app-a.destination_canonical_revision.latest.destination_service_name.tier-1-app-a.destination_service_namespace.ns-4.destination_cluster.Kubernetes.request_protocol.http.response_code.500.grpc_response_status.response_flags.-.connection_security_policy.mutual_tls: P0(nan,2300) P25(nan,2325) P50(nan,2350) P75(nan,2375) P90(nan,2390) P95(nan,2395) P99(nan,2399) P99.5(nan,2399.5) P99.9(nan,2399.9) P100(nan,2400)
+listener_manager.lds.update_duration: P0(nan,0) P25(nan,0) P50(nan,0) P75(nan,0) P90(nan,0) P95(nan,1.0799999999999996) P99(nan,10.36) P99.5(nan,10.68) P99.9(nan,10.936) P100(nan,11)
+server.initialization_time_ms: P0(nan,170) P25(nan,172.5) P50(nan,175) P75(nan,177.5) P90(nan,179) P95(nan,179.5) P99(nan,179.9) P99.5(nan,179.95) P99.9(nan,179.99) P100(nan,180)
+workload_discovery.update_duration: P0(nan,0) P25(nan,0) P50(nan,0) P75(nan,0) P90(nan,0) P95(nan,0) P99(nan,0) P99.5(nan,0) P99.9(nan,0) P100(nan,0)
