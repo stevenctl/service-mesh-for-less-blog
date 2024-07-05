@@ -12,6 +12,12 @@ GKE_PROJECT=""
 CLUSTER_VERSION="1.29.1-gke.1589020"
 ```
 
+## Node Requirements
+
+### 50 Namespaces
+
+- 34 total nodes (29 workload and 5 loadgen).
+
 # Create Cluster
 
 Create the cluster. Omit the `--spot` flag if you do not want to use spot instances

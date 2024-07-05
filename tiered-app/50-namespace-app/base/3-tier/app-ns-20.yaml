@@ -49,17 +49,31 @@ spec:
     metadata:
       labels:
         app: tier-1-app-a
-
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - tier-1-app-a
+              namespaceSelector: {}
+              topologyKey: "kubernetes.io/hostname"
       serviceAccountName: tier-1-app-a
       containers:
       - name: tier-1-app-a
-        image: nicholasjackson/fake-service:v0.26.2
+        image: howardjohn/fake-service:25
         ports:
         - containerPort: 8080
         securityContext:
           runAsUser: 1001
         env:
+        - name: "GOMAXPROCS"
+          value: "1"
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:8080"
         - name: "NAME"
@@ -138,17 +152,31 @@ spec:
     metadata:
       labels:
         app: tier-2-app-a
-
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - tier-2-app-a
+              namespaceSelector: {}
+              topologyKey: "kubernetes.io/hostname"
       serviceAccountName: tier-2-app-a
       containers:
       - name: tier-2-app-a
-        image: nicholasjackson/fake-service:v0.26.2
+        image: howardjohn/fake-service:25
         ports:
         - containerPort: 8080
         securityContext:
           runAsUser: 1001
         env:
+        - name: "GOMAXPROCS"
+          value: "1"
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:8080"
         - name: "NAME"
@@ -227,17 +255,31 @@ spec:
     metadata:
       labels:
         app: tier-2-app-b
-
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - tier-2-app-b
+              namespaceSelector: {}
+              topologyKey: "kubernetes.io/hostname"
       serviceAccountName: tier-2-app-b
       containers:
       - name: tier-2-app-b
-        image: nicholasjackson/fake-service:v0.26.2
+        image: howardjohn/fake-service:25
         ports:
         - containerPort: 8080
         securityContext:
           runAsUser: 1001
         env:
+        - name: "GOMAXPROCS"
+          value: "1"
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:8080"
         - name: "NAME"
@@ -316,17 +358,31 @@ spec:
     metadata:
       labels:
         app: tier-3-app-a
-
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - tier-3-app-a
+              namespaceSelector: {}
+              topologyKey: "kubernetes.io/hostname"
       serviceAccountName: tier-3-app-a
       containers:
       - name: tier-3-app-a
-        image: nicholasjackson/fake-service:v0.26.2
+        image: howardjohn/fake-service:25
         ports:
         - containerPort: 8080
         securityContext:
           runAsUser: 1001
         env:
+        - name: "GOMAXPROCS"
+          value: "1"
         - name: "LISTEN_ADDR"
           value: "0.0.0.0:8080"
         - name: "NAME"
@@ -359,6 +415,3 @@ spec:
           limits:
             cpu: "700m"
             memory: "500Mi"
-
-
-

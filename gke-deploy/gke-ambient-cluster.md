@@ -7,15 +7,17 @@ Set the following variables for cluster name, zone, machine type, number of node
 GKE_CLUSTER_NAME="gke-ambient-danehans"
 GKE_CLUSTER_ZONE="us-west4-b"
 MAIN_MACHINE_TYPE="n2-standard-8"
-MAIN_NUM_NODES="26"
+MAIN_NUM_NODES="30"
 GKE_PROJECT="solo-oss"
 CLUSTER_VERSION="1.29.4-gke.1043002"
 ```
 
-__Note:__ 26 nodes are required when using 50 namespaces. 5 nodes are labeled `node=loadgen` to run the vegeta traffic generator
-and 21 nodes are for running the tiered app test workload.
+## Node Requirements
 
-30 nodes and taints/tolerations are needed when waypoints use 512m CPU.
+### 50 Namespaces
+
+- 26 total nodes (21 workload and 5 loadgen) for L4 auth.
+- 30 total nodes (25 workload and 5 loadgen) for L7 auth with 50 waypoints.
 
 # Create Cluster
 

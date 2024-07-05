@@ -1,7 +1,8 @@
 # Usage
 
-To use the `tail-logs.sh` script, modify the following parameters before running
-```
+To use the `tail-logs.sh` script, modify the following parameters before running:
+
+```bash
 # Define the range of namespaces
 start_namespace=1
 end_namespace=50

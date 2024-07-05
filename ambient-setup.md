@@ -3,11 +3,11 @@
 ## Label 3 nodes that will run the vegeta traffic generator
 ```bash
 # Use 4 nodes for 30-ns, 5 nodes for 50-ns
-NODE1=gke-gke-ambient-danehans-default-pool-2db4b5fe-1s6x
-NODE2=gke-gke-ambient-danehans-default-pool-2db4b5fe-6nqf
-NODE3=gke-gke-ambient-danehans-default-pool-2db4b5fe-74l2
-NODE4=gke-gke-ambient-danehans-default-pool-2db4b5fe-1yg3
-NODE5=gke-gke-ambient-danehans-default-pool-2db4b5fe-24z6
+NODE1=gke-gke-ambient-danehans-default-pool-43b8fead-0hs3
+NODE2=gke-gke-ambient-danehans-default-pool-43b8fead-0jmr
+NODE3=gke-gke-ambient-danehans-default-pool-43b8fead-1fht
+NODE4=gke-gke-ambient-danehans-default-pool-43b8fead-32pn
+NODE5=gke-gke-ambient-danehans-default-pool-43b8fead-4vkl
 kubectl label node/$NODE1 node/$NODE2 node/$NODE3 node/$NODE4 node/$NODE5 node=loadgen
 ```
 
@@ -72,6 +72,26 @@ Wait for rollout to complete
 kubectl rollout status deploy/istiod -n istio-system
 ```
 
+Add Waypoint pod anti-affinity to the sidecar ConfigMap:
+
+```bash
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: service.istio.io/canonical-name
+            operator: In
+            values:
+            - waypoint
+        namespaceSelector: {}
+        topologyKey: "kubernetes.io/hostname"
+```
+
+TODO: Make Waypoint configurable through Helm: https://github.com/istio/istio/pull/51505
+
 ## install ztunnel
 
 For GKE, ztunnel is expected to be deployed in `kube-system`
@@ -85,7 +105,7 @@ tag: 1.22.1
 resources:
   requests:
       cpu: 500m
-      memory: 2048Mi
+      memory: 512Mi
 istioNamespace: istio-system
 logLevel: error
 EOF
@@ -155,6 +175,9 @@ Wait for the tiered app rollout to complete
 ```bash
 for i in $(seq 1 $NUM); do
   kubectl rollout status deploy/tier-1-app-a -n ns-$i
+  kubectl rollout status deploy/tier-2-app-a-v1 -n ns-$i
+  kubectl rollout status deploy/tier-2-app-b-v1 -n ns-$i
+  kubectl rollout status deploy/tier-3-app-a-v1 -n ns-$i
 done
 ```
 
@@ -167,9 +190,8 @@ done
 
 ## Verify that the tierd app was not scheduled to the loadgen nodes:
 ```bash
-kubectl get po -A -o wide | grep $NODE1
-kubectl get po -A -o wide | grep $NODE2
-kubectl get po -A -o wide | grep $NODE3
+kubectl get po -A -o wide | grep tier | grep $NODE1
+# repeat for each load gen node
 ```
 
 You should receive a `200` HTTP status code for each app instance.

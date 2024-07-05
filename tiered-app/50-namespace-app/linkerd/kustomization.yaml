@@ -10,4 +10,3 @@ resources:
 # when using ambient uncomment below
 transformers:
 - transformers/linkerd-annotations-transformer.yaml
-

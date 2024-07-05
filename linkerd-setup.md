@@ -41,7 +41,7 @@ helm upgrade --install linkerd-control-plane -n linkerd \
   --set-file identityTrustAnchorsPEM=ca.crt \
   --set-file identity.issuer.tls.crtPEM=issuer.crt \
   --set-file identity.issuer.tls.keyPEM=issuer.key \
-  --set proxy.cores=8 \
+  --set proxy.cores=2 \
   --set proxy.resources.cpu.request=100m \
   --set proxy.resources.memory.request=128Mi \
   linkerd/linkerd-control-plane
@@ -74,7 +74,6 @@ linkerd viz install | kubectl apply -f -
 ```bash
 linkerd viz dashboard &
 ```
-
 
 # Configure an App
 
@@ -122,12 +121,27 @@ The `L5D-Client-Id` header is added by the linkerd proxy when it establishes an 
 kubectl delete -k httpbin/linkerd
 ```
 
-
 # Set up the Performance Test
 
 ## deploy 50 namespace tiered-app into linkerd mesh
 ```bash
 kubectl apply -k tiered-app/50-namespace-app/linkerd
+```
+
+## Set the scale of the test:
+```bash
+# Options are 1, 5, 20, 30, 50
+NUM=50
+```
+
+Wait for the tiered app rollout to complete
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/tier-1-app-a -n ns-$i
+  kubectl rollout status deploy/tier-2-app-a-v1 -n ns-$i
+  kubectl rollout status deploy/tier-2-app-b-v1 -n ns-$i
+  kubectl rollout status deploy/tier-3-app-a-v1 -n ns-$i
+done
 ```
 
 ## exec into sleep client and curl tiered-app
@@ -140,6 +154,13 @@ curl http://tier-1-app-a.ns-1.svc.cluster.local:8080
 ## deploy 50 vegeta loadgenerators
 ```bash
 kubectl apply -k loadgenerators/50-loadgenerators
+```
+
+Wait for the loadgenerators rollout to complete
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/vegeta-ns-$i -n ns-$i
+done
 ```
 
 ## watch logs of vegeta loadgenerator
