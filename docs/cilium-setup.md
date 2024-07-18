@@ -290,9 +290,13 @@ Wait for the tiered app rollouts to complete
 ```bash
 for i in $(seq 1 $NUM); do
   kubectl rollout status deploy/tier-1-app-a -n ns-$i
+  kubectl rollout status deploy/tier-1-app-b -n ns-$i
   kubectl rollout status deploy/tier-2-app-a-v1 -n ns-$i
   kubectl rollout status deploy/tier-2-app-b-v1 -n ns-$i
+  kubectl rollout status deploy/tier-2-app-c-v1 -n ns-$i
+  kubectl rollout status deploy/tier-2-app-d-v1 -n ns-$i
   kubectl rollout status deploy/tier-3-app-a-v1 -n ns-$i
+  kubectl rollout status deploy/tier-3-app-b-v1 -n ns-$i
 done
 ```
 
@@ -306,7 +310,8 @@ Scale down the loadgen deployments:
 
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl scale deploy/vegeta-ns-$i -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
 done
 ```
 
@@ -314,7 +319,8 @@ Scale up the loadgen deployments:
 
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl scale deploy/vegeta-ns-$i -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=1
 done
 ```
 
