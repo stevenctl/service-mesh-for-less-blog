@@ -22,8 +22,8 @@ mkdir -p $output_dir
 > $output_file
 
 # Write the header for the output file
-echo "| Node | Load Gen Node | Node CPU Usage | Node Memory Usage | Pod | Pod Namespace | Pod CPU Usage | Pod Memory Usage |" >> $output_file
-echo "|------|---------------|----------------|-------------------|-----|---------------|---------------|------------------|" >> $output_file
+echo "| Node | Load Gen Node | Node CPU Usage | Node Memory Usage | Pod | Pod Namespace | Container | Container CPU Usage | Container Memory Usage |" >> $output_file
+echo "|------|---------------|----------------|-------------------|-----|---------------|-----------|---------------------|------------------------|" >> $output_file
 
 # Variables for calculating averages
 total_cpu_loadgen=0
@@ -68,10 +68,14 @@ for node in $nodes; do
         # Get the list of pods running on the node
         pods=$(kubectl get pods -n $namespace --field-selector spec.nodeName=$node -o jsonpath="{.items[*].metadata.name}")
         for pod in $pods; do
-            pod_utilization=$(kubectl top pod $pod -n $namespace --no-headers)
-            pod_cpu=$(echo $pod_utilization | awk '{print $2}')
-            pod_mem=$(echo $pod_utilization | awk '{print $3}')
-            echo "| $node | $loadgen | ${node_cpu}% | ${node_mem}% | $pod | $namespace | $pod_cpu | $pod_mem |" >> $output_file
+            # Get container-specific utilization
+            pod_utilization=$(kubectl top pod $pod -n $namespace --containers --no-headers)
+            while read -r line; do
+                container=$(echo $line | awk '{print $2}')
+                container_cpu=$(echo $line | awk '{print $3}')
+                container_mem=$(echo $line | awk '{print $4}')
+                echo "| $node | $loadgen | ${node_cpu}% | ${node_mem}% | $pod | $namespace | $container | $container_cpu | $container_mem |" >> $output_file
+            done <<< "$pod_utilization"
         done
     done
 done
