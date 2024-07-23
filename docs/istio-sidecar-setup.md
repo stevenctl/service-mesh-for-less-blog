@@ -11,12 +11,53 @@ helm repo update
 helm upgrade --install istio-base istio/base -n istio-system --version 1.22.1 --create-namespace
 ```
 
+On GKE, Istio components with the system-node-critical priorityClassName can only be installed in
+namespaces that have a ResourceQuota defined:
+
+```bash
+kubectl -n istio-system apply -f - <<EOF
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: gcp-critical-pods
+  namespace: istio-system
+spec:
+  hard:
+    pods: 1000
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values:
+      - system-node-critical
+EOF
+```
+
+Set your Istio image environment variables:
+
+Option 1: Upstream `1.22.1` image:
+
+```bash
+REPO=docker.io/istio
+ISTIO_IMAGE=1.22.1
+```
+
+Option 2: Solo `1.22.1-patch0` image:
+
+```bash
+REPO=us-docker.pkg.dev/gloo-mesh/istio-a9ee4fe9f69a
+ISTIO_IMAGE=1.22.1-patch0-solo
+```
+
 ## install istiod
 ```bash
 helm upgrade --install istiod istio/istiod \
 -n istio-system \
 --version=1.22.1 \
 -f -<<EOF
+global:
+  hub: $REPO
+  tag: $ISTIO_IMAGE
 meshConfig:
   accessLogFile: /dev/stdout
   enableAutoMtls: true

@@ -9,7 +9,7 @@ GKE_CLUSTER_ZONE="us-west4-b"
 MAIN_MACHINE_TYPE="n2-standard-8"
 MAIN_NUM_NODES=""
 GKE_PROJECT=""
-CLUSTER_VERSION="1.29.1-gke.1589020"
+CLUSTER_VERSION="1.29.6-gke.1038001"
 ```
 
 ## Node Requirements

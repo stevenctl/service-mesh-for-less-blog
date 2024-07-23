@@ -37,8 +37,8 @@ for namespace in $namespaces; do
         # Get the node the pod is running on
         node=$(kubectl get pod $pod -n $namespace -o jsonpath="{.spec.nodeName}")
 
-        # Get the environment variables using jq
-        env_vars=$(kubectl get pod $pod -n $namespace -o json | jq -r '.spec.containers[0].env[] | select(.name | test("REQUESTS_PER_SECOND|DURATION|CONNECTIONS|MAX_CONNECTIONS")) | [.name, .value] | @tsv' | awk 'BEGIN {ORS="; "} {print $1 "=" $2}')
+        # Get the environment variables for the container named "vegeta"
+        env_vars=$(kubectl get pod $pod -n $namespace -o json | jq -r '.spec.containers[] | select(.name == "vegeta") | .env[] | select(.name | test("REQUESTS_PER_SECOND|DURATION|CONNECTIONS|MAX_CONNECTIONS")) | [.name, .value] | @tsv' | awk 'BEGIN {ORS="; "} {print $1 "=" $2}')
         
         requests_per_second=$(echo $env_vars | awk -F'REQUESTS_PER_SECOND=' '{print $2}' | awk -F';' '{print $1}')
         duration=$(echo $env_vars | awk -F'DURATION=' '{print $2}' | awk -F';' '{print $1}')

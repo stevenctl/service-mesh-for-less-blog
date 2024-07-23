@@ -3,7 +3,7 @@
 Label 5 nodes that will run the Vegeta traffic generator:
 
 ```bash
-# Use 4 nodes for 30-ns, 5 nodes for 50-ns
+# Use 4 nodes for 25/30-ns, 5 nodes for 50-ns
 NODE1=gke-gke-ambient-danehans-default-pool-43b8fead-0hs3
 NODE2=gke-gke-ambient-danehans-default-pool-43b8fead-0jmr
 NODE3=gke-gke-ambient-danehans-default-pool-43b8fead-1fht
@@ -268,9 +268,13 @@ Scale down the tiered app deployments:
 ```bash
 for i in $(seq 1 $NUM); do
   kubectl scale deploy/tier-1-app-a -n ns-$i --replicas=0
-  kubectl scale deploy/tier-2-app-a-v1 -n ns-$i --replicas=0
-  kubectl scale deploy/tier-2-app-b-v1 -n ns-$i --replicas=0
-  kubectl scale deploy/tier-3-app-a-v1 -n ns-$i --replicas=0
+  kubectl scale deploy/tier-1-app-b -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-a -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-b -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-c -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-d -n ns-$i --replicas=0
+  kubectl scale deploy/tier-3-app-a -n ns-$i --replicas=0
+  kubectl scale deploy/tier-3-app-b -n ns-$i --replicas=0
 done
 ```
 
@@ -279,9 +283,13 @@ Scale up the tiered app deployments:
 ```bash
 for i in $(seq 1 $NUM); do
   kubectl scale deploy/tier-1-app-a -n ns-$i --replicas=1
-  kubectl scale deploy/tier-2-app-a-v1 -n ns-$i --replicas=1
-  kubectl scale deploy/tier-2-app-b-v1 -n ns-$i --replicas=1
-  kubectl scale deploy/tier-3-app-a-v1 -n ns-$i --replicas=1
+  kubectl scale deploy/tier-1-app-b -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-a -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-b -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-c -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-d -n ns-$i --replicas=1
+  kubectl scale deploy/tier-3-app-a -n ns-$i --replicas=1
+  kubectl scale deploy/tier-3-app-b -n ns-$i --replicas=1
 done
 ```
 
