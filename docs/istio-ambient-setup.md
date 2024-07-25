@@ -1,27 +1,5 @@
 # Ambient Performance Testing
 
-Label nodes that will run the Vegeta load generator:
-
-```bash
-# Use 4 nodes for 25/30-ns, 5 nodes for 50-ns
-NODE1=gke-gke-ambient-danehans-default-pool-43b8fead-0hs3
-NODE2=gke-gke-ambient-danehans-default-pool-43b8fead-0jmr
-NODE3=gke-gke-ambient-danehans-default-pool-43b8fead-1fht
-NODE4=gke-gke-ambient-danehans-default-pool-43b8fead-32pn
-NODE5=gke-gke-ambient-danehans-default-pool-43b8fead-4vkl
-kubectl label node/$NODE1 node/$NODE2 node/$NODE3 node/$NODE4 node/$NODE5 node=loadgen
-```
-
-Taint the load generator nodes:
-
-```bash
-for node in $(kubectl get nodes -l node=loadgen -o name); do
-  kubectl taint nodes $node loadgen=true:NoSchedule
-done
-```
-
-__Note:__ The Vegeta deployment will add a toleration to the load generator pods.
-
 ## Sample Application Installation
 
 Set the number of namespaces to use for testing:
@@ -34,7 +12,7 @@ NUM=25
 Deploy the tiered app:
 
 ```bash
-kubectl apply -k tiered-app/$NUM-namespace-app/ambient
+kubectl apply -k tiered-app/$NUM-namespace-app/base
 ```
 
 Wait for the tiered app rollout to complete:
@@ -43,12 +21,12 @@ Wait for the tiered app rollout to complete:
 for i in $(seq 1 $NUM); do
   kubectl rollout status deploy/tier-1-app-a -n ns-$i
   kubectl rollout status deploy/tier-1-app-b -n ns-$i
-  kubectl rollout status deploy/tier-2-app-a-v1 -n ns-$i
-  kubectl rollout status deploy/tier-2-app-b-v1 -n ns-$i
-  kubectl rollout status deploy/tier-2-app-c-v1 -n ns-$i
-  kubectl rollout status deploy/tier-2-app-d-v1 -n ns-$i
-  kubectl rollout status deploy/tier-3-app-a-v1 -n ns-$i
-  kubectl rollout status deploy/tier-3-app-b-v1 -n ns-$i
+  kubectl rollout status deploy/tier-2-app-a -n ns-$i
+  kubectl rollout status deploy/tier-2-app-b -n ns-$i
+  kubectl rollout status deploy/tier-2-app-c -n ns-$i
+  kubectl rollout status deploy/tier-2-app-d -n ns-$i
+  kubectl rollout status deploy/tier-3-app-a -n ns-$i
+  kubectl rollout status deploy/tier-3-app-b -n ns-$i
 done
 ```
 
@@ -77,31 +55,31 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Watch logs of a vegeta load generator:
+Tail the vegeta load generator logs until you see the following (10-minutes):
 
 ```bash
-kubectl logs -l app=vegeta1 -f -n ns-1
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
 ```
 
-Inspect the resource usage of the Istio control plane components:
-
-```bash
-kubectl top pods -n istio-system --sort-by cpu
-```
-
-## Run Performance Reports
-
-Run the script to collect logs:
+Generate the reports:
 
 ```bash
 ./scripts/run-all-reports.sh baseline-run-1
 ```
 
-`baseline-run-1` is the prefix applied to the filename of the performance reports.
+`baseline-run-1` is the prefix applied to the filenames of the performance reports stored in the `out` directory.
 
 ## Istio Installation
 
-Add ambient helm repo:
+Add Istio helm repo:
 
 ```bash
 helm repo add istio https://istio-release.storage.googleapis.com/charts
@@ -179,7 +157,7 @@ Wait for rollout to complete:
 kubectl rollout status ds/istio-cni-node -n istio-system
 ```
 
-Install istiod:
+Install Istiod:
 
 ```bash
 helm upgrade --install istiod istio/istiod \
@@ -222,6 +200,8 @@ TODO: Make waypoints configurable at install time: https://github.com/istio/isti
 
 Install ztunnel:
 
+__Option 1:__ Without L7 Telemetry
+
 ```bash
 helm upgrade --install ztunnel istio/ztunnel \
 -n istio-system \
@@ -231,6 +211,30 @@ variant: distroless
 hub: $REPO
 tag: $ISTIO_IMAGE
 EOF
+```
+
+__Option 2:__ With L7 Telemetry (Requires Solo image)
+
+```bash
+helm upgrade --install ztunnel istio/ztunnel \
+-n istio-system \
+--version=1.22.1 \
+-f -<<EOF
+variant: distroless
+hub: $REPO
+tag: $ISTIO_IMAGE
+env:
+  L7_ENABLED: "true"
+EOF
+```
+
+__Note:__ Use `kubectl port-forward -n istio-system ds/ztunnel 15020:15020` to access the ztunnel metrics API
+after running an ambient performance test. L7 metrics such as `total requests` and `duration` with labels that
+are based on the L7 attributes (e.g. `Result Code`) should be observed. For example:
+
+```bash
+...
+istio_requests_total{response_code="200",reporter="source",source_workload="tier-1-app-a",source_canonical_service="tier-1-app-a",source_canonical_revision="latest",source_workload_namespace="ns-5",source_principal="spiffe://cluster.local/ns/ns-5/sa/tier-1-app-a",source_app="tier-1-app-a",source_version="latest",source_cluster="Kubernetes",destination_service="tier-2-app-b.ns-5.svc.cluster.local",destination_service_namespace="ns-5",destination_service_name="tier-2-app-b",destination_workload="tier-2-app-b",destination_canonical_service="tier-2-app-b",destination_canonical_revision="latest",destination_workload_namespace="ns-5",destination_principal="spiffe://cluster.local/ns/ns-5/sa/tier-2-app-b",destination_app="tier-2-app-b",destination_version="latest",destination_cluster="Kubernetes",request_protocol="http",response_flags="-",connection_security_policy="mutual_tls"} 376752
 ```
 
 Wait for rollout to complete:
@@ -247,12 +251,24 @@ Deploy the tiered app into ambient mesh:
 kubectl apply -k tiered-app/$NUM-namespace-app/ambient
 ```
 
-## Baseline Performance Testing
+## Ambient mTLS Performance Testing
 
-Deploy the Vegeta load generators:
+Scale down the load generator deployments:
 
 ```bash
-kubectl apply -k loadgenerators/$NUM-loadgenerators
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
+done
+```
+
+Scale up the load generator deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=1
+done
 ```
 
 Wait for the load generator rollouts to complete:
@@ -264,36 +280,24 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Watch logs of a vegeta load generator:
+Tail the vegeta load generator logs until you see the following (10-minutes):
 
 ```bash
-kubectl logs -l app=vegeta1 -f -n ns-1
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
 ```
 
-Inspect the resource usage of the Istio control plane components:
+Generate the test reports:
 
 ```bash
-kubectl top pods -n istio-system --sort-by cpu
-```
-
-## Collect Logs
-
-In the `experiment-data/tail-logs.sh` script change the following variables:
-
-```bash
-# Define the range of namespaces
-start_namespace=1
-end_namespace=50
-
-# Define the output file
-output_file="450rps-10m-30-app-istio-ambient-l4-run-data-run-1.md"
-```
-
-Run the script to collect logs:
-
-```bash
-cd experiment-data
-./tail-logs.sh
+./scripts/run-all-reports.sh ambient-mtls-run-1
 ```
 
 ## L4 Auth Performance Testing
@@ -330,17 +334,35 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Rename and rerun the `tail-logs.sh` script.
+Tail the vegeta load generator logs until you see the following (10-minutes):
+
+```bash
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
+```
+
+Generate the test reports:
+
+```bash
+./scripts/run-all-reports.sh ambient-l4-auth-run-1
+```
 
 ## L7 Auth Performance Testing
 
-Configure waypoint proxy per namespace:
+Deploy the waypoint proxies:
 
 ```bash
 kubectl apply -k tiered-app/$NUM-namespace-app/ambient/waypoints
 ```
 
-Check the status of the waypoint deployments:
+Wait for the waypoint rollouts to complete:
 
 ```bash
 for i in $(seq 1 $NUM); do
@@ -378,21 +400,25 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Inspect waypoint resource usage:
+Tail the vegeta load generator logs until you see the following (10-minutes):
 
 ```bash
-for i in $(seq 1 $NUM); do
-  kubectl top pods -n ns-$i --sort-by cpu | grep waypoint
-done
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
 ```
 
-Inspect the resource usage of the Istio control plane components:
+Generate the test reports:
 
 ```bash
-kubectl top pods -n istio-system --sort-by cpu
+./scripts/run-all-reports.sh ambient-l7-auth-run-1
 ```
-
-Rename and rerun the `tail-logs.sh` script.
 
 ## Manual Performance Testing (Optional)
 

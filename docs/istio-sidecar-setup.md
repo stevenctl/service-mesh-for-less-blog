@@ -1,12 +1,32 @@
-# Ambient Performance Test Setup
+# Sidecar Performance Testing
 
-## add Istio helm repo
+## Sample Application Installation
+
+Follow the [sample application installation](./istio-ambient-setup.md#sample-application-installation) section of
+the Ambient setup guide to install the 3-tier test application.
+
+## Baseline Performance Testing
+
+Follow the [baseline performance testing](./istio-ambient-setup.md#baseline-performance-testing) section of
+the Ambient setup guide to run the baseline performance test.
+
+Uninstall the sample application after the performance testing is complete and reports have been generated:
+
+```bash
+kubectl delete -k tiered-app/$NUM-namespace-app/base
+```
+
+## Istio Installation
+
+Add Istio helm repo:
+
 ```bash
 helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 ```
 
-## install istio-base
+Install istio-base:
+
 ```bash
 helm upgrade --install istio-base istio/base -n istio-system --version 1.22.1 --create-namespace
 ```
@@ -35,21 +55,22 @@ EOF
 
 Set your Istio image environment variables:
 
-Option 1: Upstream `1.22.1` image:
+__Option 1:__ Upstream `1.22.1` image:
 
 ```bash
 REPO=docker.io/istio
 ISTIO_IMAGE=1.22.1
 ```
 
-Option 2: Solo `1.22.1-patch0` image:
+__Option 2:__ Solo `1.22.1-patch0` image:
 
 ```bash
 REPO=us-docker.pkg.dev/gloo-mesh/istio-a9ee4fe9f69a
 ISTIO_IMAGE=1.22.1-patch0-solo
 ```
 
-## install istiod
+Install Istiod:
+
 ```bash
 helm upgrade --install istiod istio/istiod \
 -n istio-system \
@@ -71,109 +92,117 @@ meshConfig:
 EOF
 ```
 
-Wait for rollout to complete
+Wait for rollout to complete:
+
 ```bash
 kubectl rollout status deploy/istiod -n istio-system
 ```
 
-# Configure an App
+## Add the Sample Application to the Sidecar Mesh
 
-## deploy client into istio mesh
+Deploy the tiered app into sidecar mesh:
+
 ```bash
-kubectl apply -k client/sidecar
+kubectl apply -k tiered-app/$NUM-namespace-app/sidecar
 ```
 
-## deploy httpbin into istio mesh
+## Performance Testing
+
+Scale down the load generator deployments:
+
 ```bash
-kubectl apply -k httpbin/sidecar
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
+done
 ```
 
-## exec into sleep client and curl httpbin /get endpoint to verify mTLS
+Scale up the load generator deployments:
+
 ```bash
-kubectl exec -it deploy/sleep -n client -c sleep sh
-
-curl httpbin.httpbin.svc.cluster.local:8000/get
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=1
+done
 ```
 
-## remove httpbin
+Wait for the load generator rollouts to complete:
+
 ```bash
-kubectl delete -k httpbin/sidecar
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/vegeta1 -n ns-$i
+  kubectl rollout status deploy/vegeta2 -n ns-$i
+done
 ```
 
+Tail the vegeta load generator logs until you see the following (10-minutes):
 
-# Set up the Performance Test
-
-## deploy 50 namespace tiered-app into istio mesh
 ```bash
-kubectl apply -k tiered-app/50-namespace-app/sidecar
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
 ```
 
-## exec into sleep client and curl tiered-app
+Generate the test reports:
+
 ```bash
-kubectl exec -it deploy/sleep -n client sh
-
-curl http://tier-1-app-a.ns-1.svc.cluster.local:8080
+./scripts/run-all-reports.sh istio-sidecar-run-1
 ```
 
-## deploy 50 vegeta loadgenerators
+## Manual Performance Testing (Optional)
+
+Example exec into vegeta to run your own test:
+
 ```bash
-kubectl apply -k loadgenerators/50-loadgenerators
+kubectl --namespace ns-1 exec -it deploy/vegeta-ns-1 -c vegeta -- /bin/sh
 ```
 
-## watch logs of vegeta loadgenerator
-```bash
-kubectl logs -l app=vegeta -f -n ns-1
-```
+Example test run:
 
-## watch top pods
-```bash
-watch kubectl top pods -n ns-1
-watch kubectl top pods -n kube-system --sort-by cpu
-```
-
-## collect logs
-In the `experiment-data/tail-logs.sh` script change the following variables
-```
-# Define the range of namespaces
-start_namespace=1
-end_namespace=50
-
-# Define the output file
-output_file="450rps-10m-50-app-linkerd-default-istio-resources-data-run-1.md"
-```
-
-Run the script to collect logs:
-```
-cd experiment-data
-./tail-logs.sh
-```
-
-## example exec into vegeta to run your own test (optional)
-```bash
-kubectl --namespace ns-1 exec -it deploy/vegeta -c vegeta -- /bin/sh
-```
-
-test run:
 ```bash
 echo "GET http://tier-1-app-a.ns-1.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-5.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-6.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-10.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-11.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+
+echo "GET http://tier-1-app-a.ns-20.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
 ```
 
-## deploy sample addons (optional)
+## Addons Installation (Optional)
+
+Deploy sample addons:
+
 ```bash
 kubectl apply -k addons
 ```
 
-## port forward to grafana (optional)
+Port forward to Grafana:
+
 ```bash
 kubectl port-forward svc/grafana -n istio-system 3000:3000
 ```
 
-## port forward to kiali (optional)
+Port forward to Kiali:
+
 ```bash
 kubectl port-forward svc/kiali -n istio-system 20001:20001
 ```
 
-## uninstall
+## Cleanup
+
+When testing is complete, uninstall Istio:
+
 ```bash
 helm uninstall istiod -n istio-system
 helm uninstall istio-base -n istio-system
