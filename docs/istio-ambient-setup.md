@@ -72,10 +72,19 @@ Error Set:
 Generate the reports:
 
 ```bash
-./scripts/run-all-reports.sh baseline-run-1
+./scripts/run-all-reports.sh ambient-baseline-run-1
 ```
 
-`baseline-run-1` is the prefix applied to the filenames of the performance reports stored in the `out` directory.
+`ambient-baseline-run-1` is the prefix applied to the performance report filenames stored in the `out` directory.
+
+Scale down the load generator deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
+done
+```
 
 ## Istio Installation
 
@@ -253,15 +262,6 @@ kubectl apply -k tiered-app/$NUM-namespace-app/ambient
 
 ## Ambient mTLS Performance Testing
 
-Scale down the load generator deployments:
-
-```bash
-for i in $(seq 1 $NUM); do
-  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
-  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
-done
-```
-
 Scale up the load generator deployments:
 
 ```bash
@@ -300,14 +300,6 @@ Generate the test reports:
 ./scripts/run-all-reports.sh ambient-mtls-run-1
 ```
 
-## L4 Auth Performance Testing
-
-Configure l4 auth policy:
-
-```bash
-kubectl apply -k tiered-app/$NUM-namespace-app/ambient/l4-policy
-```
-
 Scale down the load generator deployments:
 
 ```bash
@@ -315,6 +307,14 @@ for i in $(seq 1 $NUM); do
   kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
   kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
 done
+```
+
+## L4 Auth Performance Testing
+
+Configure l4 auth policy:
+
+```bash
+kubectl apply -k tiered-app/$NUM-namespace-app/ambient/l4-policy
 ```
 
 Scale up the load generator deployments:
@@ -354,6 +354,15 @@ Generate the test reports:
 ./scripts/run-all-reports.sh ambient-l4-auth-run-1
 ```
 
+Scale down the load generator deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=0
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=0
+done
+```
+
 ## L7 Auth Performance Testing
 
 Deploy the waypoint proxies:
@@ -374,14 +383,6 @@ Configure l7 auth policy:
 
 ```bash
 kubectl apply -k tiered-app/$NUM-namespace-app/ambient/l7-policy
-```
-
-Scale down the load generator deployments:
-
-```bash
-for i in $(seq 1 $NUM); do
-  kubectl scale deploy/vegeta-ns-$i -n ns-$i --replicas=0
-done
 ```
 
 Scale up the load generator deployments:
@@ -420,7 +421,7 @@ Generate the test reports:
 ./scripts/run-all-reports.sh ambient-l7-auth-run-1
 ```
 
-## Manual Performance Testing (Optional)
+## Manual Testing (Optional)
 
 Example exec into vegeta to run your own test:
 
@@ -442,6 +443,38 @@ echo "GET http://tier-1-app-a.ns-10.svc.cluster.local:8080" | vegeta attack -dns
 echo "GET http://tier-1-app-a.ns-11.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
 
 echo "GET http://tier-1-app-a.ns-20.svc.cluster.local:8080" | vegeta attack -dns-ttl=0 -rate 500/1s -duration=2s | tee results.bin | vegeta report -type=text
+```
+
+## Optional Commands
+
+Scale down the tiered app deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/tier-1-app-a -n ns-$i --replicas=0
+  kubectl scale deploy/tier-1-app-b -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-a -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-b -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-c -n ns-$i --replicas=0
+  kubectl scale deploy/tier-2-app-d -n ns-$i --replicas=0
+  kubectl scale deploy/tier-3-app-a -n ns-$i --replicas=0
+  kubectl scale deploy/tier-3-app-b -n ns-$i --replicas=0
+done
+```
+
+Scale up the tiered app deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/tier-1-app-a -n ns-$i --replicas=1
+  kubectl scale deploy/tier-1-app-b -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-a -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-b -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-c -n ns-$i --replicas=1
+  kubectl scale deploy/tier-2-app-d -n ns-$i --replicas=1
+  kubectl scale deploy/tier-3-app-a -n ns-$i --replicas=1
+  kubectl scale deploy/tier-3-app-b -n ns-$i --replicas=1
+done
 ```
 
 ## Addons Installation (Optional)

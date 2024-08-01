@@ -1,14 +1,15 @@
-# Create a new cluster
+# Create a GKE Cluster
 
 Set the following variables for cluster name, zone, machine type, number of nodes, k8s version, and the target GKE project:
 
 ```bash
-GKE_CLUSTER_NAME="my-gke-cluster"
+GKE_CLUSTER_NAME="danehans-gke-cluster"
 GKE_CLUSTER_ZONE="us-west4-b"
 MAIN_MACHINE_TYPE="n2-standard-8"
 MAIN_NUM_NODES="25"
 GKE_PROJECT="solo-oss"
 CLUSTER_VERSION="1.29.6-gke.1038001"
+LABEL="user=danehans"
 ```
 
 ## Node Requirements
@@ -20,7 +21,7 @@ CLUSTER_VERSION="1.29.6-gke.1038001"
 
 ### 25 Namespaces
 
-- 25 total nodes (21 workload and 3 loadgen) for all test cases other than Istio sidecar.
+- 25 total nodes (21 workload and 4 loadgen) for all test cases other than Istio sidecar.
 - 27 total nodes (23 workload and 4 loadgen) for L7 auth with 50 waypoints.
 
 ## Create Cluster
@@ -37,10 +38,13 @@ gcloud container clusters create ${GKE_CLUSTER_NAME} \
   --project ${GKE_PROJECT} \
   --logging NONE \
   --no-enable-autoscaling \
-  --spot
+  --labels=${LABEL}
 ```
 
-__Note:__ Add the `--node-taints node.cilium.io/agent-not-ready=true:NoExecute` flag when creating the cluster.
+__Notes:__
+
+- Add the `--node-taints node.cilium.io/agent-not-ready=true:NoExecute` flag when creating the cluster.
+- Add `--spot` to use GKE spot instances.
 
 ## Taint Load Generator Nodes
 
