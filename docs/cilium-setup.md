@@ -274,6 +274,21 @@ helm upgrade ---install cilium cilium/cilium --version 1.15.6 \
   --set encryption.type=ipsec
 ```
 
+__Option 3:__ EKS with Wireguard encryption:
+
+Update the Cilium config:
+
+```bash
+helm upgrade ---install cilium cilium/cilium --version 1.15.6 \
+  --namespace kube-system \
+  --set eni.enabled=true \
+  --set ipam.mode=eni \
+  --set routingMode=native \
+  --set operator.replicas=1 \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard
+```
+
 __Note__: `kubeProxyReplacement=true` is omitted since it's [not supported](https://docs.cilium.io/en/stable/security/network/encryption-ipsec/#limitations) with IPsec. TODO: Should this flag be removed for all tests for consistency?
 
 Wait for Cilium to be ready:
@@ -414,23 +429,23 @@ Update the Cilium config for Gateway API and mutual auth:
 
 ```bash
 helm upgrade --install cilium cilium/cilium --version 1.15.6 \
-    --namespace kube-system \
-    --set nodeinit.enabled=true \
-    --set nodeinit.reconfigureKubelet=true \
-    --set nodeinit.removeCbrBridge=true \
-    --set cni.binPath=/home/kubernetes/bin \
-    --set gke.enabled=true \
-    --set ipam.mode=kubernetes \
-    --set ipv4NativeRoutingCIDR=$NATIVE_CIDR \
-    --set kubeProxyReplacement=true \
-    --set l2NeighDiscovery.enabled=false \
-    --set encryption.enabled=true \
-    --set encryption.type=wireguard \
-    --set gatewayAPI.enabled=true \
-    --set authentication.mutual.spire.enabled=true \
-    --set authentication.mutual.spire.install.enabled=true \
-    --set authentication.mutual.spire.install.server.dataStorage.enabled=false \
-    --set operator.replicas=1
+  --namespace kube-system \
+  --set nodeinit.enabled=true \
+  --set nodeinit.reconfigureKubelet=true \
+  --set nodeinit.removeCbrBridge=true \
+  --set cni.binPath=/home/kubernetes/bin \
+  --set gke.enabled=true \
+  --set ipam.mode=kubernetes \
+  --set ipv4NativeRoutingCIDR=$NATIVE_CIDR \
+  --set kubeProxyReplacement=true \
+  --set l2NeighDiscovery.enabled=false \
+  --set operator.replicas=1 \
+  --set encryption.enabled=true \
+  --set encryption.type=wireguard \
+  --set gatewayAPI.enabled=true \
+  --set authentication.mutual.spire.enabled=true \
+  --set authentication.mutual.spire.install.enabled=true \
+  --set authentication.mutual.spire.install.server.dataStorage.enabled=false
 ```
 
 __Note:__ `encryption.nodeEncryption=true` caused metrics to fail so it was not included.
