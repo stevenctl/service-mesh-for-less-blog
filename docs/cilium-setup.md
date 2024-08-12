@@ -43,7 +43,7 @@ __Note:__ Repeat the above step for each load generator node.
 Deploy the Vegeta load generators:
 
 ```bash
-kubectl apply -k loadgenerators/$NUM-loadgenerators
+kubectl apply -k loadgenerators/$NUM-loadgenerators/base
 ```
 
 Wait for the load generator rollouts to complete:
@@ -129,6 +129,12 @@ __Note:__ Replace `cilium/cilium --version 1.15.6` with `./cilium` from path `{C
 
 __Option 2:__ EKS Cluster:
 
+Cilium will manage ENIs instead of VPC CNI, so the aws-node DaemonSet has to be patched to prevent conflict behavior:
+
+```bash
+kubectl -n kube-system patch daemonset aws-node --type='strategic' -p='{"spec":{"template":{"spec":{"nodeSelector":{"io.cilium/aws-node-enabled":"true"}}}}}'
+```
+
 Install Cilium __without__ Gateway API, mutual auth, and Wireguard encryption:
 
 ```bash
@@ -136,24 +142,40 @@ helm upgrade --install cilium cilium/cilium --version 1.15.6 \
   --namespace kube-system \
   --set eni.enabled=true \
   --set ipam.mode=eni \
-  --set egressMasqueradeInterfaces=eth0 \
   --set routingMode=native \
   --set kubeProxyReplacement=true \
   --set l2NeighDiscovery.enabled=false \
   --set operator.replicas=1
 ```
 
-__Note:__ Replace `cilium/cilium --version 1.15.6` with `./cilium` from path `{CILIUM_REPO_ROOT/install/kubernetes}`
-to use latest Cilium dev build.
-
 The `l2NeighDiscovery.enabled=false` option must be set when `kubeProxyReplacement=true` due to
 [Issue #28858](https://github.com/cilium/cilium/issues/28858). Refer to the [upstream docs](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#neighbor-discovery) to learn more about neighbor discovery with KPR.
 
-Cilium will manage ENIs instead of VPC CNI, so the aws-node DaemonSet has to be patched to prevent conflict behavior:
+__Option 3:__ Kind Cluster:
+
+This option should only be used for testing a single namespace, e.g. `NUM=1`.
+
+Extract the cluster CIDR to enable native routing:
 
 ```bash
-kubectl -n kube-system patch daemonset aws-node --type='strategic' -p='{"spec":{"template":{"spec":{"nodeSelector":{"io.cilium/aws-node-enabled":"true"}}}}}'
+NATIVE_CIDR=$(kubectl get po/kube-controller-manager-kind-control-plane -n kube-system -o jsonpath='{.spec.containers[0].command}' | jq -r '.[]' | grep -- '--cluster-cidr=' | cut -d'=' -f2)
+echo $NATIVE_CIDR
 ```
+
+Install Cilium __without__ Gateway API, mutual auth, and IPSec encryption:
+
+```bash
+helm upgrade --install cilium cilium/cilium --version 1.15.6 \
+  --namespace kube-system \
+  --set routingMode=native \
+  --set kubeProxyReplacement=true \
+  --set ipv4NativeRoutingCIDR=$NATIVE_CIDR \
+  --set autoDirectNodeRoutes=true \
+  --set operator.replicas=1
+```
+
+__Note:__ Replace `cilium/cilium --version 1.15.6` with `./cilium` from path `{CILIUM_REPO_ROOT/install/kubernetes}`
+to use latest Cilium dev build.
 
 Wait for the Cilium install to complete:
 
@@ -255,7 +277,7 @@ __Option 2:__ EKS with IPSec encryption:
 Create the IPSec pre shared keys and store them as a secret:
 
 ```bash
-kubectl create -n kube-system secret generic cilium-ipsec-keys \
+kubectl create secret -n kube-system generic cilium-ipsec-keys \
     --from-literal=keys="3+ rfc4106(gcm(aes)) $(echo $(dd if=/dev/urandom count=20 bs=1 2> /dev/null | xxd -p -c 64)) 128"
 ```
 
@@ -264,12 +286,13 @@ __Note:__ The `+`  in the above command indicates per tunnel keys are being used
 Update the Cilium config:
 
 ```bash
-helm upgrade ---install cilium cilium/cilium --version 1.15.6 \
+helm upgrade --install cilium cilium/cilium --version 1.15.6 \
   --namespace kube-system \
   --set eni.enabled=true \
   --set ipam.mode=eni \
   --set routingMode=native \
   --set operator.replicas=1 \
+  --set kubeProxyReplacement=true \
   --set encryption.enabled=true \
   --set encryption.type=ipsec
 ```
@@ -288,8 +311,6 @@ helm upgrade ---install cilium cilium/cilium --version 1.15.6 \
   --set encryption.enabled=true \
   --set encryption.type=wireguard
 ```
-
-__Note__: `kubeProxyReplacement=true` is omitted since it's [not supported](https://docs.cilium.io/en/stable/security/network/encryption-ipsec/#limitations) with IPsec. TODO: Should this flag be removed for all tests for consistency?
 
 Wait for Cilium to be ready:
 
@@ -413,42 +434,16 @@ done
 
 This test updates the L4 network policy from the previous test to include mutual auth.
 
-Install the Gateway API CRDs:
+Update Cilium with mutual auth:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-```
-
-Update the Cilium config for Gateway API and mutual auth:
-
-
-```bash
-helm upgrade --install cilium cilium/cilium --version 1.15.6 \
+helm upgrade cilium/cilium --version 1.15.6 \
   --namespace kube-system \
-  --set nodeinit.enabled=true \
-  --set nodeinit.reconfigureKubelet=true \
-  --set nodeinit.removeCbrBridge=true \
-  --set cni.binPath=/home/kubernetes/bin \
-  --set gke.enabled=true \
-  --set ipam.mode=kubernetes \
-  --set ipv4NativeRoutingCIDR=$NATIVE_CIDR \
-  --set kubeProxyReplacement=true \
-  --set l2NeighDiscovery.enabled=false \
-  --set operator.replicas=1 \
-  --set encryption.enabled=true \
-  --set encryption.type=wireguard \
-  --set gatewayAPI.enabled=true \
+  --reuse-values \
   --set authentication.mutual.spire.enabled=true \
   --set authentication.mutual.spire.install.enabled=true \
   --set authentication.mutual.spire.install.server.dataStorage.enabled=false
 ```
-
-__Note:__ `encryption.nodeEncryption=true` caused metrics to fail so it was not included.
 
 To ensure the Spire agent runs on all nodes, patch the DaemonSet to tolerate taint `loadgen=true`:
 
@@ -636,6 +631,89 @@ Generate the reports:
 ./scripts/run-all-reports.sh cilium-encryption-l7-net-policy-mutual-auth-run-1
 ```
 
+## Cilium GAMMA Performance Testing
+
+Test Cilium with [GAMMA](https://docs.cilium.io/en/latest/network/servicemesh/gateway-api/gamma/#gamma-support) with optional
+L4 and L7 network policies.
+
+Install the Gateway API CRDs:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+```
+
+Update the Cilium install with Gateway API:
+
+```bash
+helm upgrade cilium ./cilium \
+  --namespace kube-system \
+  --reuse-values \
+  --set gatewayAPI.enabled=true
+```
+
+Update the tiered apps with a GAMMA producer services and HTTPRoutes:
+
+```bash
+kubectl apply -k tiered-app/$NUM-namespace-app/cilium/gamma
+```
+
+Optionally, add a L4 network policy:
+
+```bash
+kubectl apply -k tiered-app/$NUM-namespace-app/cilium/gamma/l4-policy
+```
+
+TODO: Get L7 policies to work with GAMMA.
+
+Update the Vegeta load generators to use the GAMMA service URL:
+
+```bash
+kubectl apply -k loadgenerators/$NUM-loadgenerators/cilium
+```
+
+Scale up the load generator deployments:
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=1
+done
+```
+
+Wait for the load generator rollouts to complete
+
+```bash
+for i in $(seq 1 $NUM); do
+  kubectl rollout status deploy/vegeta1 -n ns-$i
+  kubectl rollout status deploy/vegeta2 -n ns-$i
+done
+```
+
+Tail the vegeta load generator logs until you see the following (10-minutes):
+
+```bash
+$ kubectl logs -l app=vegeta1 -f -n ns-1
+Requests      [total, rate, throughput]         120000, 200.00, 200.00
+Duration      [total, attack, wait]             10m0s, 10m0s, 1.942ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  1.63ms, 1.919ms, 1.899ms, 2.033ms, 2.115ms, 2.374ms, 25.578ms
+Bytes In      [total, mean]                     325486616, 2712.39
+Bytes Out     [total, mean]                     0, 0.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:120000
+Error Set:
+```
+
+Generate the reports:
+
+```bash
+./scripts/run-all-reports.sh cilium-gamma-run-1
+```
+
 ## Optional Commands
 
 If you did not install your cluster with the `--node-taints node.cilium.io/agent-not-ready=true:NoExecute`
@@ -650,7 +728,7 @@ kubectl taint nodes --all node.cilium.io/agent-not-ready=true:NoExecute-
 An example exec into Vegeta to run your own test:
 
 ```bash
-kubectl --namespace ns-1 exec -it deploy/vegeta-ns-1 -c vegeta -- /bin/sh
+kubectl --namespace ns-1 exec -it deploy/vegeta1 -c vegeta -- /bin/sh
 ```
 
 test run:

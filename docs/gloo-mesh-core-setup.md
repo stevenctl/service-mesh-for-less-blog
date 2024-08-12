@@ -151,7 +151,7 @@ __Note:__ Repeat the above step for each load gen node.
 Deploy the vegeta load generators:
 
 ```bash
-kubectl apply -k loadgenerators/$NUM-loadgenerators
+kubectl apply -k loadgenerators/$NUM-loadgenerators/base
 ```
 
 Wait for the load generators rollout to complete:

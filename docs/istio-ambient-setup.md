@@ -43,7 +43,7 @@ __Note:__ Repeat the above step for each load generator node.
 Deploy the Vegeta load generators:
 
 ```bash
-kubectl apply -k loadgenerators/$NUM-loadgenerators
+kubectl apply -k loadgenerators/$NUM-loadgenerators/base
 ```
 
 Wait for the load generator rollouts to complete:

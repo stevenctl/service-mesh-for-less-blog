@@ -34,7 +34,7 @@ export AWS_SESSION_TOKEN=<your session token>
 Set the cluster environment variables:
 
 ```bash
-export CLUSTER_NAME="solo-system-dhansen-7616"
+export CLUSTER_NAME="my-cluster"
 export REGION="us-west-2"
 export NUM_NODES="25"
 export INSTANCE="m5.2xlarge"
@@ -65,7 +65,7 @@ EOF
 eksctl create cluster -f clusterconfig.yaml
 ```
 
-__Note:__ Adding the following taint to the `managedNodeGroups` setion of the eksctl config will ensure
+__Note:__ Adding the following taint to the `managedNodeGroups` section of the eksctl config will ensure
 application pods are not scheduled/executed until Cilium is deployed. This was not enabled above since the
 first step in testing is to create a baseline.
 

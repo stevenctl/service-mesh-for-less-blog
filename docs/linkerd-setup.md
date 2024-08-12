@@ -153,13 +153,13 @@ curl http://tier-1-app-a.ns-1.svc.cluster.local:8080
 
 ## deploy 50 vegeta loadgenerators
 ```bash
-kubectl apply -k loadgenerators/50-loadgenerators
+kubectl apply -k loadgenerators/50-loadgenerators/base
 ```
 
 Wait for the loadgenerators rollout to complete
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl rollout status deploy/vegeta-ns-$i -n ns-$i
+  kubectl rollout status deploy/vegeta$i -n ns-$i
 done
 ```
 
