@@ -30,14 +30,6 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Verify that the tiered app was not scheduled to the load generator nodes:
-
-```bash
-kubectl get po -A -o wide | grep tier | grep $NODE1
-```
-
-__Note:__ Repeat the above step for each load generator node.
-
 ## Baseline Performance Testing
 
 Deploy the Vegeta load generators:
@@ -330,7 +322,8 @@ Wait for the load generator rollouts to complete:
 
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl rollout status deploy/vegeta-ns-$i -n ns-$i
+  kubectl rollout status deploy/vegeta1 -n ns-$i
+  kubectl rollout status deploy/vegeta2 -n ns-$i
 done
 ```
 
@@ -446,6 +439,14 @@ echo "GET http://tier-1-app-a.ns-20.svc.cluster.local:8080" | vegeta attack -dns
 ```
 
 ## Optional Commands
+
+Verify that the tiered app was not scheduled to the load generator nodes:
+
+```bash
+kubectl get po -A -o wide | grep tier | grep $NODE1
+```
+
+__Note:__ Repeat the above step for each load generator node.
 
 Scale down the tiered app deployments:
 

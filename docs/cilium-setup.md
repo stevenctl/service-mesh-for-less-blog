@@ -30,14 +30,6 @@ for i in $(seq 1 $NUM); do
 done
 ```
 
-Verify that the tiered app was not scheduled to the load generator nodes:
-
-```bash
-kubectl get po -A -o wide | grep tier | grep $NODE1
-```
-
-__Note:__ Repeat the above step for each load generator node.
-
 ## Baseline Performance Testing
 
 Deploy the Vegeta load generators:
@@ -722,6 +714,14 @@ taint, then you can deploy the sample application for baseline testing. Otherwis
 ```bash
 kubectl taint nodes --all node.cilium.io/agent-not-ready=true:NoExecute-
 ```
+
+Verify that the tiered app was not scheduled to the load generator nodes:
+
+```bash
+kubectl get po -A -o wide | grep tier | grep $NODE1
+```
+
+__Note:__ Repeat the above step for each load generator node.
 
 ## Manual Testing (Optional)
 

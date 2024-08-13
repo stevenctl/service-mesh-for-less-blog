@@ -13,6 +13,7 @@ patches:
     metadata:
       name: not-important
     spec:
+      replicas: 2
       template:
         spec:
           affinity:

@@ -41,9 +41,9 @@ spec:
         - name: GAMMA_APP_URL
           value: "http://tier-1-app.ns-1.svc.cluster.local:8080/v1"
         - name: REQUESTS_PER_SECOND
-          value: "200"
+          value: "150"
         - name: DURATION
-          value: "1m"
+          value: "10m"
         - name: CONNECTIONS
           value: "100"
         - name: MAX_CONNECTIONS
@@ -99,9 +99,9 @@ spec:
         - name: GAMMA_APP_URL
           value: "http://tier-1-app.ns-1.svc.cluster.local:8080/v2"
         - name: REQUESTS_PER_SECOND
-          value: "200"
+          value: "150"
         - name: DURATION
-          value: "1m"
+          value: "10m"
         - name: CONNECTIONS
           value: "100"
         - name: MAX_CONNECTIONS

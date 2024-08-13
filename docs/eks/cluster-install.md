@@ -56,6 +56,7 @@ availabilityZones:
 managedNodeGroups:
 - name: ng-1
   desiredCapacity: ${NUM_NODES}
+  maxSize: 500
   instanceType: ${INSTANCE}
   availabilityZones:
   - ${REGION}a
@@ -128,7 +129,13 @@ kubectl top nodes
 If you want to scale up/down the `ng-1` node group:
 
 ```bash
-eksctl scale nodegroup --cluster ${CLUSTER_NAME} --name ng-1 --nodes 27
+eksctl scale nodegroup --cluster ${CLUSTER_NAME} --nodes 27 --name ng-1
+```
+
+Check the status of the scaling:
+
+```bash
+eksctl get nodegroup --cluster ${CLUSTER_NAME} --name ng-1
 ```
 
 ## Cleanup
