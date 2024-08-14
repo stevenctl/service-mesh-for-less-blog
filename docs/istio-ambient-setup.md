@@ -382,7 +382,8 @@ Scale up the load generator deployments:
 
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl scale deploy/vegeta-ns-$i -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta1 -n ns-$i --replicas=1
+  kubectl scale deploy/vegeta2 -n ns-$i --replicas=1
 done
 ```
 
@@ -390,11 +391,12 @@ Wait for the load generator rollouts to complete:
 
 ```bash
 for i in $(seq 1 $NUM); do
-  kubectl rollout status deploy/vegeta-ns-$i -n ns-$i
+  kubectl rollout status deploy/vegeta1 -n ns-$i
+  kubectl rollout status deploy/vegeta2 -n ns-$i
 done
 ```
 
-Tail the vegeta load generator logs until you see the following (10-minutes):
+Tail the vegeta load generator logs until you see the following (~10-minutes):
 
 ```bash
 $ kubectl logs -l app=vegeta1 -f -n ns-1
@@ -419,7 +421,7 @@ Generate the test reports:
 Example exec into vegeta to run your own test:
 
 ```bash
-kubectl --namespace ns-1 exec -it deploy/vegeta-ns-1 -c vegeta -- /bin/sh
+kubectl exec -it deploy/vegeta1 --namespace ns-1 -c vegeta -- /bin/sh
 ```
 
 Example test run:
