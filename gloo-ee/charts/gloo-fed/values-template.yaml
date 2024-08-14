@@ -1,0 +1,110 @@
+enabled: true
+glooFed:
+  replicas: 1
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed
+    tag: %gloo-fed-version%
+    digest: %gloo-fed-digest%
+    fipsDigest: %gloo-fed-digest%
+    distrolessDigest: %gloo-fed-distroless-digest%
+    fipsDistrolessDigest: %gloo-fed-distroless-digest%
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+  retries:
+    clusterWatcherRemote:
+      type: backoff
+      delay: 1s
+      maxDelay: 0
+      maxJitter: 100ms
+      attempts: 0
+    clusterWatcherLocal:
+      type: backoff
+      delay: 100ms
+      maxDelay: 0
+      maxJitter: 100ms
+      attempts: 5
+# the UI can be enabled independently of gloo-fed
+glooFedApiserver:
+  enable: true
+  port: 10101
+  healthCheckPort: 8081
+  stats: null
+  floatingUserId: false
+  runAsUser: 101
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed-apiserver
+    tag: %gloo-fed-apiserver-version%
+    digest: %gloo-fed-apiserver-digest%
+    fipsDigest: %gloo-fed-apiserver-digest%
+    distrolessDigest: %gloo-fed-apiserver-distroless-digest%
+    fipsDistrolessDigest: %gloo-fed-apiserver-distroless-digest%
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+  envoy:
+    bootstrapConfig:
+      configMapName: gloo-fed-default-apiserver-envoy-config
+    image:
+      pullPolicy: IfNotPresent
+      repository: gloo-fed-apiserver-envoy
+      tag: %gloo-fed-apiserver-envoy-version%
+      digest: %gloo-fed-apiserver-envoy-digest%
+      fipsDigest: %gloo-fed-apiserver-envoy-digest%
+      distrolessDigest: %gloo-fed-apiserver-envoy-distroless-digest%
+      fipsDistrolessDigest: %gloo-fed-apiserver-envoy-distroless-digest%
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+  console:
+    port: 8090
+    image:
+      pullPolicy: IfNotPresent
+      repository: gloo-federation-console
+      tag: %gloo-federation-console-version%
+      digest: %gloo-federation-console-digest%
+      fipsDigest: %gloo-federation-console-digest%
+      distrolessDigest: %gloo-federation-console-distroless-digest%
+      fipsDistrolessDigest: %gloo-federation-console-distroless-digest%
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+global:
+  glooStats:
+    enabled: true
+  glooMtls:
+    enabled: false
+  image:
+    pullPolicy: IfNotPresent
+    registry: quay.io/solo-io
+  istioIntegration: {}
+  istioSDS: {}
+  console:
+    readOnly: false
+    apiExplorerEnabled: true
+  securitySettings: {}
+license_key: ""
+license_secret_name: license
+create_license_secret: true
+enableMultiClusterRbac: false
+rbacWebhook:
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed-rbac-validating-webhook
+    tag: %gloo-fed-rbac-validating-webhook-version%
+    digest: %gloo-fed-rbac-validating-webhook-digest%
+    fipsDigest: %gloo-fed-rbac-validating-webhook-digest%
+    distrolessDigest: %gloo-fed-rbac-validating-webhook-distroless-digest%
+    fipsDistrolessDigest: %gloo-fed-rbac-validating-webhook-distroless-digest%
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+rbac:
+  create: true

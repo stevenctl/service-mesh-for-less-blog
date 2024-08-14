@@ -1,0 +1,130 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.prometheusServerMigrationJob.enabled }}
+{{- $image := .Values.prometheus.prometheusServerMigrationJob.image }}
+{{- if .Values.global }}
+{{- $image = merge .Values.prometheus.prometheusServerMigrationJob.image .Values.global.image }}
+{{- end }}
+{{ $prometheusDeployment := (default "glooe-prometheus-server" $.Values.prometheus.server.fullnameOverride) }}
+{{- if .Values.global.glooRbac.create }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus-server-migration
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "gloo.labels" . | nindent 4 }}
+    gloo: prometheus-server-migration
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-weight: "-10"
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: prometheus-server-migration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gloo.labels" . | nindent 4 }}
+    gloo: prometheus-server-migration
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-10" # must be created before job
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus-server-migration
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "gloo.labels" . | nindent 4 }}
+    gloo: prometheus-server-migration
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-weight: "-10"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus-server-migration
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-server-migration
+    namespace: {{ $.Release.Namespace }}
+{{- end }}{{/* if .Values.global.glooRbac.create */}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prometheus-server-migration
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-weight: "-10"
+    {{- include "gloo.jobHelmDeletePolicySucceededAndBeforeCreation" .Values.prometheus.prometheusServerMigrationJob | nindent 4 }}
+  labels:
+    {{- include "gloo.labels" . | nindent 4 }}
+    gloo: prometheus-server-migration
+spec:
+  {{- include "gloo.jobSpecStandardFields" .Values.prometheus.prometheusServerMigrationJob | nindent 2 -}}
+  template:
+    metadata:
+      name: prometheus-server-migration
+      labels:
+        gloo: prometheus-server-migration
+        sidecar.istio.io/inject: "false"
+        {{- if .Values.prometheus.prometheusServerMigrationJob.extraPodLabels }}
+        {{- range $key, $value := .Values.prometheus.prometheusServerMigrationJob.extraPodLabels }}
+        {{ $key | quote }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+      {{- if or .Values.settings.linkerd .Values.prometheus.prometheusServerMigrationJob.extraPodAnnotations }}
+      annotations:
+        {{- if .Values.settings.linkerd }}
+        "linkerd.io/inject": disabled
+        {{- end }}
+        {{- range $key, $value := .Values.prometheus.prometheusServerMigrationJob.extraPodAnnotations }}
+        {{ $key | quote }}: {{ $value | quote }}
+        {{- end }}
+      {{- end }}
+    spec:
+      {{- include "gloo.pullSecret" $image | nindent 6 -}}
+      serviceAccountName: prometheus-server-migration
+      {{- include "gloo.podSpecStandardFields" .Values.prometheus.prometheusServerMigrationJob | nindent 6 -}}
+      containers:
+        - name: prometheus-server-migration
+          image: {{template "gloo.image" $image}}
+          imagePullPolicy: {{ $image.pullPolicy }}
+          {{- $securityDefaults := dict "runAsNonRoot" true }}
+          {{- if not .Values.prometheus.prometheusServerMigrationJob.floatingUserId -}}
+            {{- $_ := set $securityDefaults "runAsUser" .Values.prometheus.prometheusServerMigrationJob.runAsUser }}
+          {{- end -}}
+          {{- include "gloo.containerSecurityContext" (dict "values" .Values.prometheus.prometheusServerMigrationJob.containerSecurityContext "defaults" $securityDefaults "podSecurityStandards" .Values.global.podSecurityStandards "globalSec" .Values.global.securitySettings "indent" 10) }}
+          {{- with .Values.prometheus.prometheusServerMigrationJob.resources }}
+          resources: {{ toYaml . | nindent 12}}
+          {{- end }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              PROMETHEUS_CHART_VERSION=$(kubectl get deploy/{{ $prometheusDeployment }} -n {{ $.Release.Namespace }} \
+                -o jsonpath='{.metadata.labels.helm\.sh/chart}')
+              error="$?"
+              if [ "${error}" != "0" ]; then
+                echo "Failed to retrieve the {{ $.Release.Namespace }}/{{ $prometheusDeployment }} deployment."
+                exit 0
+              fi
+
+              if [ -n "${PROMETHEUS_CHART_VERSION}" ]; then
+                echo "Skipping migration. The current Prometheus chart's labels are up to date."
+                exit 0
+              fi
+
+              echo "Applying actions to migrate Prometheus chart from version ${PROMETHEUS_CHART_VERSION}..."
+              kubectl delete deploy/{{ $prometheusDeployment }} -n {{ $.Release.Namespace }} --wait=true
+{{ end }}

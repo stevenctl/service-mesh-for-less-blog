@@ -1,0 +1,110 @@
+enabled: true
+glooFed:
+  replicas: 1
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed
+    tag: 1.17.0
+    digest: sha256:6093e06f93fbb32fc1b24c0d3c37c3cd4b514758ae3cf7248f2094b046b78d3d
+    fipsDigest: sha256:6093e06f93fbb32fc1b24c0d3c37c3cd4b514758ae3cf7248f2094b046b78d3d
+    distrolessDigest: sha256:d26b044b2b361d542dfbfcf54a4978a8a90f0dba36b71d1a3b6d43cc94b1134d
+    fipsDistrolessDigest: sha256:d26b044b2b361d542dfbfcf54a4978a8a90f0dba36b71d1a3b6d43cc94b1134d
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+  retries:
+    clusterWatcherRemote:
+      type: backoff
+      delay: 1s
+      maxDelay: 0
+      maxJitter: 100ms
+      attempts: 0
+    clusterWatcherLocal:
+      type: backoff
+      delay: 100ms
+      maxDelay: 0
+      maxJitter: 100ms
+      attempts: 5
+# the UI can be enabled independently of gloo-fed
+glooFedApiserver:
+  enable: true
+  port: 10101
+  healthCheckPort: 8081
+  stats: null
+  floatingUserId: false
+  runAsUser: 101
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed-apiserver
+    tag: 1.17.0
+    digest: sha256:3b91f0c93073e259617ebffd806dd0d3431ebf9ee8012c88a87cadc12472bf9a
+    fipsDigest: sha256:3b91f0c93073e259617ebffd806dd0d3431ebf9ee8012c88a87cadc12472bf9a
+    distrolessDigest: sha256:e9e723b0b67a8e1fe8fac85a0079d6868e3e297489b7f96425836a7279c507e8
+    fipsDistrolessDigest: sha256:e9e723b0b67a8e1fe8fac85a0079d6868e3e297489b7f96425836a7279c507e8
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+  envoy:
+    bootstrapConfig:
+      configMapName: gloo-fed-default-apiserver-envoy-config
+    image:
+      pullPolicy: IfNotPresent
+      repository: gloo-fed-apiserver-envoy
+      tag: 1.17.0
+      digest: sha256:6f9b0495cd06cbe70b633088891f2444a936e395ae2b08d77b0df1055b8ae88e
+      fipsDigest: sha256:6f9b0495cd06cbe70b633088891f2444a936e395ae2b08d77b0df1055b8ae88e
+      distrolessDigest: sha256:d942caaf67e90e0f585cb13ae8043a8fd4dff47f881899c5a73727f0306f7737
+      fipsDistrolessDigest: sha256:d942caaf67e90e0f585cb13ae8043a8fd4dff47f881899c5a73727f0306f7737
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+  console:
+    port: 8090
+    image:
+      pullPolicy: IfNotPresent
+      repository: gloo-federation-console
+      tag: 1.17.0
+      digest: sha256:3f61d4a97ff4f7a37de8920999d28d8b466310168f71d865faec291aa5a52e8e
+      fipsDigest: sha256:3f61d4a97ff4f7a37de8920999d28d8b466310168f71d865faec291aa5a52e8e
+      distrolessDigest: sha256:c4703062a992e844db9e54e43fdd6f3fb7bd36503f84f948b4a543a8281e35cd
+      fipsDistrolessDigest: sha256:c4703062a992e844db9e54e43fdd6f3fb7bd36503f84f948b4a543a8281e35cd
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+global:
+  glooStats:
+    enabled: true
+  glooMtls:
+    enabled: false
+  image:
+    pullPolicy: IfNotPresent
+    registry: quay.io/solo-io
+  istioIntegration: {}
+  istioSDS: {}
+  console:
+    readOnly: false
+    apiExplorerEnabled: true
+  securitySettings: {}
+license_key: ""
+license_secret_name: license
+create_license_secret: true
+enableMultiClusterRbac: false
+rbacWebhook:
+  image:
+    pullPolicy: IfNotPresent
+    repository: gloo-fed-rbac-validating-webhook
+    tag: 1.17.0
+    digest: sha256:30cd7957a9ef19da6201cd6772c91d4ca6e9a26c9778fb766dc5c2a6181b1e70
+    fipsDigest: sha256:30cd7957a9ef19da6201cd6772c91d4ca6e9a26c9778fb766dc5c2a6181b1e70
+    distrolessDigest: sha256:a3bffe7e51cb072d048b6d203aab1b2c60e68f6fdef4b17c14db93444d51112b
+    fipsDistrolessDigest: sha256:a3bffe7e51cb072d048b6d203aab1b2c60e68f6fdef4b17c14db93444d51112b
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+rbac:
+  create: true

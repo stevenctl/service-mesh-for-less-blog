@@ -1,0 +1,21 @@
+license_key: foobar-not-valid-does-this-work
+
+ambient:
+  waypoint:
+    enabled: true
+
+gloo:
+  kubeGateway:
+    enabled: true
+
+  gloo:
+    deployment:
+      image:
+        pullPolicy: Always
+        repository: gloo-ee
+        tag: PR-6666
+        # actually respect the tag
+        digest: ""
+        distrolessDigest: ""
+        fipsDigest: ""
+        fipsDistrolessDigest: ""

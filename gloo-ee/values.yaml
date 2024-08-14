@@ -1,0 +1,625 @@
+ambient:
+  waypoint:
+    enabled: false
+create_license_secret: true
+gateway-portal-web-server:
+  enabled: false
+  featureGates:
+    ApiProducts: true
+  glooPortalServer:
+    apiKeyStorage:
+      redis:
+        enabled: false
+    enabled: true
+    env:
+    - name: K8S_MEM_LIMIT
+      valueFrom:
+        resourceFieldRef:
+          divisor: "1"
+          resource: limits.memory
+  installEnterpriseCrds: true
+global:
+  extauthCustomYaml: false
+  extensions:
+    caching:
+      deployment:
+        floatingUserId: null
+        glooAddress: gloo
+        image:
+          digest: sha256:0f00504f040baea8ab7209d5348f51c10ebc0768a6fdbfeec08e5af9e8c1a4f6
+          distrolessDigest: sha256:3150d620c4849715173c03a859f6357a741843c03dda09ab67020d4601248264
+          fipsDigest: sha256:0f00504f040baea8ab7209d5348f51c10ebc0768a6fdbfeec08e5af9e8c1a4f6
+          fipsDistrolessDigest: sha256:3150d620c4849715173c03a859f6357a741843c03dda09ab67020d4601248264
+          pullPolicy: IfNotPresent
+          repository: caching-ee
+          tag: 1.17.0
+        name: caching-service
+        runAsUser: 10101
+        stats: null
+      enabled: false
+      name: caching-service
+      service:
+        httpPort: 8085
+    extAuth:
+      deployment:
+        floatingUserId: false
+        fsGroup: 10101
+        glooPort: 9977
+        image:
+          digest: sha256:3dd4aca4c2e1d4d900505c78a93f642b52584d05040bdf5b50299229071c27f6
+          distrolessDigest: sha256:1d30e4928459fb7ffd05942f7b5813bf870fe7ea9201ecf68301f7d3c348e7f6
+          fipsDigest: sha256:7f91ce0df5dbbbbeb7292d247f79fa37bd106a1c261c0a6e3cc0845743596904
+          fipsDistrolessDigest: sha256:1f51a7f392e9e8e4c3fa1f20eea1e1cd3a34cc57622c6ec5c438431fb8c56be4
+          pullPolicy: IfNotPresent
+          repository: extauth-ee
+          tag: 1.17.0
+        name: extauth
+        port: 8083
+        runAsUser: 10101
+        stats: null
+      enabled: true
+      envoySidecar: false
+      secretName: null
+      serverUpstreamName: ""
+      service:
+        name: extauth
+        port: 8083
+      serviceName: ext-auth
+      signingKey:
+        name: extauth-signing-key
+        signing-key: ""
+      standaloneDeployment: true
+      tlsEnabled: false
+      transportApiVersion: V3
+      userIdHeader: x-user-id
+    glooRedis:
+      enableAcl: true
+    rateLimit:
+      deployment:
+        aerospike:
+          address: ""
+          batchSize: 5000
+          commitLevel: 1
+          namespace: solo-namespace
+          port: 3000
+          readModeAP: 0
+          readModeSC: 0
+          set: ratelimiter
+          tls:
+            insecure: false
+            version: "1.3"
+        dynamodb:
+          batchSize: 100
+          consistentReads: true
+          region: us-east-2
+          tableName: rate-limits
+        floatingUserId: false
+        glooAddress: gloo
+        glooPort: 9977
+        image:
+          digest: sha256:6dcd3083621efdfe9c9f7649412aa00d3ce3a99202e60c74918d3e78845c194b
+          distrolessDigest: sha256:ee6b0ef6d5e1701539b207c030f1d610f9abe050eca2d0d116c265bf42187262
+          fipsDigest: sha256:c1ad5b1b010e00de733adc7f67cbba745275dd1504de8fd6f230d7a5d92e8838
+          fipsDistrolessDigest: sha256:89861c23963393126b3ecf2a77f439cbe41953d121d9ee1a18e81dda9a6581e2
+          pullPolicy: IfNotPresent
+          repository: rate-limit-ee
+          tag: 1.17.0
+        name: rate-limit
+        runAsUser: 10101
+        stats: null
+      enabled: true
+      serverUpstreamName: rate-limit
+      service:
+        name: rate-limit
+        port: 18081
+  extraCustomResources: true
+  extraSpecs: true
+  glooMtls:
+    enabled: false
+    envoy:
+      image:
+        digest: sha256:dc0b791aee33eb6b55d78c8a1a015a4fba8a4e576955508f68861c397c05dc54
+        distrolessDigest: sha256:4f6d33ae17eb8899343b57562cbf3f56c28cfdc87f36aae3998fb3cdf7b2ec6b
+        fipsDigest: sha256:011bc82c322f01d1b7ba050e51a4aee19908742a8e46be6180eb5d4cc8d7f258
+        fipsDistrolessDigest: sha256:6ee4ceb7434b2c724cc563fca04cccf05b3094d18e233043650d36ffbd3e8c24
+        repository: gloo-ee-envoy-wrapper
+        tag: 1.17.0
+    istioProxy: {}
+    sds:
+      image:
+        digest: sha256:15d4a9aacd82afc519d907894d1be2903bbc8ffce64fb5f368f32f735bece738
+        distrolessDigest: sha256:6b929e325725bd9797c79f62d566d816e5a8b19599308c15d53afd06345fa4ce
+        fipsDigest: sha256:dd93af345edead3e23ea7a0780f52da82f50baa0751e5730031b4f70e0713775
+        fipsDistrolessDigest: sha256:1b0b4dc2b2a4eaa88968647d0dd4da74535e0f12b787c4b123d42dfd26d31856
+        repository: sds-ee
+        tag: 1.17.0
+  glooRbac:
+    create: true
+  glooStats:
+    enabled: true
+    routePrefixRewrite: /stats/prometheus
+  graphql:
+    changeValidation:
+      rejectBreaking: false
+      rules:
+        dangerousToBreaking: false
+        deprecatedFieldRemovalDangerous: false
+        ignoreDescriptionChanges: false
+        ignoreUnreachable: false
+  image:
+    fips: false
+    pullPolicy: IfNotPresent
+    registry: quay.io/solo-io
+  istioIntegration: {}
+  istioSDS: {}
+  securitySettings: {}
+gloo:
+  discovery:
+    deployment:
+      image:
+        digest: sha256:650fff91114336138d3c16bdb61b60aae264db17d3dea25018002b070a5ecc0a
+        distrolessDigest: sha256:20935aae72f6ebb512dc345424dac98ea3c298d88009186632f2d762deded287
+        fipsDigest: sha256:41520d866355ba5de306e6b3354692d9f9c944f9b5e9ad26fc34db2c9e5845c7
+        fipsDistrolessDigest: sha256:f15554b6946727fc220c404bc715fdf96490504617c7d4bf2d7bcf384be2ff6c
+        pullPolicy: IfNotPresent
+        repository: discovery-ee
+        tag: 1.17.0
+      stats: {}
+    serviceAccount: {}
+  gateway:
+    Service: null
+    certGenJob:
+      image:
+        digest: sha256:c2ea3b03f29902dfdd78313b74da15ff2f581efeee66e6ee1e26e59a6f80b3a9
+        distrolessDigest: sha256:e42066f108ac209c2b591fc4a5a40a4e23aabe145c57b8c9777a2aa7b3a261c3
+        fipsDigest: sha256:c2ea3b03f29902dfdd78313b74da15ff2f581efeee66e6ee1e26e59a6f80b3a9
+        fipsDistrolessDigest: sha256:e42066f108ac209c2b591fc4a5a40a4e23aabe145c57b8c9777a2aa7b3a261c3
+        pullPolicy: IfNotPresent
+        repository: certgen
+        tag: 1.18.0-beta14
+    cleanupJob:
+      image:
+        digest: sha256:0fa2cf12dd143eaf8d3f5b2d4f32a72ab2a4617a4855d5c08a7d9c31d7fc472b
+        distrolessDigest: sha256:938720788d069787e711e0b8159158bb2e82a392fb6c1d5fd828fb0f54649c2b
+        fipsDigest: sha256:0fa2cf12dd143eaf8d3f5b2d4f32a72ab2a4617a4855d5c08a7d9c31d7fc472b
+        fipsDistrolessDigest: sha256:938720788d069787e711e0b8159158bb2e82a392fb6c1d5fd828fb0f54649c2b
+        pullPolicy: IfNotPresent
+        repository: kubectl
+        tag: 1.18.0-beta14
+    proxyServiceAccount: {}
+    rolloutJob:
+      image:
+        digest: sha256:0fa2cf12dd143eaf8d3f5b2d4f32a72ab2a4617a4855d5c08a7d9c31d7fc472b
+        distrolessDigest: sha256:938720788d069787e711e0b8159158bb2e82a392fb6c1d5fd828fb0f54649c2b
+        fipsDigest: sha256:0fa2cf12dd143eaf8d3f5b2d4f32a72ab2a4617a4855d5c08a7d9c31d7fc472b
+        fipsDistrolessDigest: sha256:938720788d069787e711e0b8159158bb2e82a392fb6c1d5fd828fb0f54649c2b
+        pullPolicy: IfNotPresent
+        repository: kubectl
+        tag: 1.18.0-beta14
+    updateValues: true
+    validation: {}
+  gatewayProxies:
+    gatewayProxy:
+      failover: {}
+      podTemplate:
+        image:
+          digest: sha256:dc0b791aee33eb6b55d78c8a1a015a4fba8a4e576955508f68861c397c05dc54
+          distrolessDigest: sha256:4f6d33ae17eb8899343b57562cbf3f56c28cfdc87f36aae3998fb3cdf7b2ec6b
+          fipsDigest: sha256:011bc82c322f01d1b7ba050e51a4aee19908742a8e46be6180eb5d4cc8d7f258
+          fipsDistrolessDigest: sha256:6ee4ceb7434b2c724cc563fca04cccf05b3094d18e233043650d36ffbd3e8c24
+          pullPolicy: IfNotPresent
+          repository: gloo-ee-envoy-wrapper
+          tag: 1.17.0
+      service:
+        extraAnnotations:
+          prometheus.io/path: /metrics
+          prometheus.io/port: "8081"
+          prometheus.io/scrape: "true"
+  gloo:
+    deployment:
+      image:
+        digest: sha256:046219fea93d539ac1a425ef4314cd61af441afc798784bb26a3fc29b3240895
+        distrolessDigest: sha256:f9b1523055e900436eaa2879f97d159e9b252c268b85a43041809de8410a7ac4
+        fipsDigest: sha256:38f6b2af2e265f4e07081afd460bd98de3a3847fb1f34d09b1b8a282ce331169
+        fipsDistrolessDigest: sha256:028f913c46e86583dc6333a7ae145560c0b1515201e6a9d0f841160c455fa1af
+        pullPolicy: IfNotPresent
+        repository: gloo-ee
+        tag: 1.17.0
+      ossImageTag: 1.18.0-beta14
+    serviceAccount: {}
+  ingressProxy:
+    deployment:
+      image:
+        digest: sha256:dc0b791aee33eb6b55d78c8a1a015a4fba8a4e576955508f68861c397c05dc54
+        distrolessDigest: sha256:4f6d33ae17eb8899343b57562cbf3f56c28cfdc87f36aae3998fb3cdf7b2ec6b
+        fipsDigest: sha256:011bc82c322f01d1b7ba050e51a4aee19908742a8e46be6180eb5d4cc8d7f258
+        fipsDistrolessDigest: sha256:6ee4ceb7434b2c724cc563fca04cccf05b3094d18e233043650d36ffbd3e8c24
+        pullPolicy: IfNotPresent
+        repository: gloo-ee-envoy-wrapper
+        tag: 1.17.0
+  kubeGateway:
+    enabled: false
+    gatewayParameters:
+      glooGateway:
+        envoyContainer:
+          image:
+            digest: sha256:dc0b791aee33eb6b55d78c8a1a015a4fba8a4e576955508f68861c397c05dc54
+            distrolessDigest: sha256:4f6d33ae17eb8899343b57562cbf3f56c28cfdc87f36aae3998fb3cdf7b2ec6b
+            fipsDigest: sha256:011bc82c322f01d1b7ba050e51a4aee19908742a8e46be6180eb5d4cc8d7f258
+            fipsDistrolessDigest: sha256:6ee4ceb7434b2c724cc563fca04cccf05b3094d18e233043650d36ffbd3e8c24
+            repository: gloo-ee-envoy-wrapper
+            tag: 1.17.0
+  license_secret_name: license
+  redis:
+    aclPrefix: user default +@all allkeys on >
+    cert:
+      cacrt: ""
+      crt: ""
+      enabled: false
+      key: ""
+    clientSideShardingEnabled: false
+    clustered: false
+    deployment:
+      enablePodSecurityContext: true
+      floatingUserId: false
+      fsGroup: 999
+      image:
+        distrolessDigest: ""
+        fipsDigest: ""
+        fipsDistrolessDigest: ""
+        registry: docker.io
+        repository: redis
+        tag: 7.2.5-alpine
+      initContainer:
+        image:
+          distrolessDigest: ""
+          fipsDigest: ""
+          fipsDistrolessDigest: ""
+          registry: docker.io
+          repository: busybox
+          tag: "1.28"
+      name: redis
+      persistence: null
+      runAsGroup: 999
+      runAsUser: 999
+      staticPort: 6379
+    disabled: false
+    service:
+      db: 0
+      name: redis
+      port: 6379
+  settings:
+    aws: {}
+    circuitBreakers: {}
+    integrations:
+      knative:
+        proxy:
+          image:
+            digest: sha256:dc0b791aee33eb6b55d78c8a1a015a4fba8a4e576955508f68861c397c05dc54
+            distrolessDigest: sha256:4f6d33ae17eb8899343b57562cbf3f56c28cfdc87f36aae3998fb3cdf7b2ec6b
+            fipsDigest: sha256:011bc82c322f01d1b7ba050e51a4aee19908742a8e46be6180eb5d4cc8d7f258
+            fipsDistrolessDigest: sha256:6ee4ceb7434b2c724cc563fca04cccf05b3094d18e233043650d36ffbd3e8c24
+            pullPolicy: IfNotPresent
+            repository: gloo-ee-envoy-wrapper
+            tag: 1.17.0
+    secretOptions: {}
+gloo-fed:
+  create_license_secret: false
+grafana:
+  adminPassword: admin
+  adminUser: admin
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - disableDeletion: false
+        editable: true
+        folder: gloo
+        name: gloo
+        options:
+          path: /var/lib/grafana/dashboards/gloo
+        orgId: 1
+        type: file
+  dashboardsConfigMaps:
+    gloo: glooe-grafana-custom-dashboards-v2
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - access: proxy
+        isDefault: true
+        name: gloo
+        type: prometheus
+        url: http://glooe-prometheus-server:80
+  defaultInstallationEnabled: true
+  fullnameOverride: glooe-grafana
+  initChownData:
+    enabled: false
+  nameOverride: glooe-grafana
+  persistence:
+    enabled: true
+    size: 100Mi
+  rbac:
+    create: false
+    pspEnabled: false
+  securityContext:
+    fsGroup: 472
+    runAsGroup: 472
+    runAsUser: 472
+  testFramework:
+    enabled: false
+observability:
+  customGrafana: {}
+  deployment:
+    floatingUserId: false
+    image:
+      digest: sha256:ccc3c36da15b2682bce32b986fa168e95d7f4b94ae4f8eaab6cbb08ea449d8c2
+      distrolessDigest: sha256:5e75b6bf3c1233a63d8204e1373d376261134b6aaf6e3c5921c5fed431c1deae
+      fipsDigest: sha256:ccc3c36da15b2682bce32b986fa168e95d7f4b94ae4f8eaab6cbb08ea449d8c2
+      fipsDistrolessDigest: sha256:5e75b6bf3c1233a63d8204e1373d376261134b6aaf6e3c5921c5fed431c1deae
+      pullPolicy: IfNotPresent
+      repository: observability-ee
+      tag: 1.17.0
+    runAsUser: 10101
+    stats: null
+  enabled: true
+  upstreamDashboardTemplate: ""
+prometheus:
+  alertmanager:
+    enabled: false
+  enabled: true
+  kube-state-metrics:
+    fullnameOverride: glooe-prometheus-kube-state-metrics-v2
+  nameOverride: glooe-prometheus
+  prometheus-node-exporter:
+    enabled: false
+  prometheus-pushgateway:
+    enabled: false
+  prometheusServerMigrationJob:
+    enabled: true
+    image:
+      distrolessDigest: ""
+      fipsDigest: ""
+      fipsDistrolessDigest: ""
+      pullPolicy: IfNotPresent
+      registry: docker.io/alpine
+      repository: k8s
+      tag: 1.29.2
+    restartPolicy: OnFailure
+    runAsUser: 10101
+    ttlSecondsAfterFinished: 300
+  server:
+    fullnameOverride: glooe-prometheus-server
+    global:
+      evaluation_interval: 10s
+      scrape_interval: 10s
+    persistentVolume:
+      size: 16Gi
+    strategy:
+      type: Recreate
+  serverFiles:
+    prometheus.yml:
+      scrape_configs:
+      - job_name: kube-state-metrics
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - action: keep
+          regex: kube-state-metrics
+          source_labels:
+          - __meta_kubernetes_service_label_app_kubernetes_io_name
+      - job_name: kubernetes-service-endpoints
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        - action: keep
+          regex: true
+          source_labels:
+          - __meta_kubernetes_service_labelpresent_gloo
+        - action: keep
+          regex: true
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_scrape
+        - action: replace
+          regex: (https?)
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_scheme
+          target_label: __scheme__
+        - action: replace
+          regex: (.+)
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_path
+          target_label: __metrics_path__
+        - action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          source_labels:
+          - __address__
+          - __meta_kubernetes_service_annotation_prometheus_io_port
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_namespace
+          target_label: kubernetes_namespace
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_service_name
+          target_label: kubernetes_name
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_pod_node_name
+          target_label: kubernetes_node
+      - job_name: kubernetes-service-endpoints-slow
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        - action: keep
+          regex: true
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_scrape_slow
+        - action: replace
+          regex: (https?)
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_scheme
+          target_label: __scheme__
+        - action: replace
+          regex: (.+)
+          source_labels:
+          - __meta_kubernetes_service_annotation_prometheus_io_path
+          target_label: __metrics_path__
+        - action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          source_labels:
+          - __address__
+          - __meta_kubernetes_service_annotation_prometheus_io_port
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_namespace
+          target_label: kubernetes_namespace
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_service_name
+          target_label: kubernetes_name
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_pod_node_name
+          target_label: kubernetes_node
+        scrape_interval: 5m
+        scrape_timeout: 30s
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - action: keep
+          regex: true
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+        - action: replace
+          regex: (https?)
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_scheme
+          target_label: __scheme__
+        - action: replace
+          regex: (.+)
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_path
+          target_label: __metrics_path__
+        - action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          source_labels:
+          - __address__
+          - __meta_kubernetes_pod_annotation_prometheus_io_port
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_namespace
+          target_label: kubernetes_namespace
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_pod_name
+          target_label: kubernetes_pod_name
+        - action: drop
+          regex: Pending|Succeeded|Failed
+          source_labels:
+          - __meta_kubernetes_pod_phase
+      - job_name: kubernetes-pods-slow
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - action: keep
+          regex: true
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_scrape_slow
+        - action: replace
+          regex: (https?)
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_scheme
+          target_label: __scheme__
+        - action: replace
+          regex: (.+)
+          source_labels:
+          - __meta_kubernetes_pod_annotation_prometheus_io_path
+          target_label: __metrics_path__
+        - action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          source_labels:
+          - __address__
+          - __meta_kubernetes_pod_annotation_prometheus_io_port
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_namespace
+          target_label: kubernetes_namespace
+        - action: replace
+          source_labels:
+          - __meta_kubernetes_pod_name
+          target_label: kubernetes_pod_name
+        - action: drop
+          regex: Pending|Succeeded|Failed
+          source_labels:
+          - __meta_kubernetes_pod_phase
+        scrape_interval: 5m
+        scrape_timeout: 30s
+rbac:
+  create: false
+redis:
+  aclPrefix: user default +@all allkeys on >
+  cert:
+    cacrt: ""
+    crt: ""
+    enabled: false
+    key: ""
+  clientSideShardingEnabled: false
+  clustered: false
+  deployment:
+    enablePodSecurityContext: true
+    floatingUserId: false
+    fsGroup: 999
+    image:
+      distrolessDigest: ""
+      fipsDigest: ""
+      fipsDistrolessDigest: ""
+      pullPolicy: IfNotPresent
+      registry: docker.io
+      repository: redis
+      tag: 7.2.4-alpine
+    initContainer:
+      image:
+        distrolessDigest: ""
+        fipsDigest: ""
+        fipsDistrolessDigest: ""
+        registry: docker.io
+        repository: busybox
+        tag: "1.28"
+    name: redis
+    persistence:
+      enabled: false
+    runAsGroup: 999
+    runAsUser: 999
+    staticPort: 6379
+  disabled: false
+  service:
+    db: 0
+    name: redis
+    port: 6379
+settings:
+  aws: {}
+  circuitBreakers: {}
+  integrations:
+    knative:
+      proxy:
+        image:
+          repository: ""
+  secretOptions: {}

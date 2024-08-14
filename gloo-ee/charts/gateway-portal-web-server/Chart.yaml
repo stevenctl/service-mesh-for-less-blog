@@ -1,0 +1,5 @@
+apiVersion: v2
+description: Helm chart for the Gateway Portal Web Server. Only installable as a sub-chart
+  of Gloo Edge Enterprise.
+name: gateway-portal-web-server
+version: 1.17.0

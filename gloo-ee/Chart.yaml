@@ -1,0 +1,29 @@
+apiVersion: v2
+dependencies:
+- name: gloo
+  repository: https://storage.googleapis.com/solo-public-helm
+  version: 1.18.0-beta14
+- condition: prometheus.enabled
+  name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  tags:
+  - monitoring
+  version: 25.21.0
+- condition: grafana.defaultInstallationEnabled
+  name: grafana
+  repository: https://grafana.github.io/helm-charts
+  tags:
+  - monitoring
+  version: 7.3.11
+- name: gloo-fed
+  repository: file:///home/landow/solo/solo-projects/stevenctl/waypoint-istio-authz/install/helm/gloo-fed
+  version: 1.17.0
+- condition: gateway-portal-web-server.enabled
+  name: gateway-portal-web-server
+  repository: file://../gateway-portal-web-server
+  tags:
+  - gateway-portal
+  version: 1.17.0
+description: A Helm chart for Kubernetes
+name: gloo-ee
+version: 1.17.0

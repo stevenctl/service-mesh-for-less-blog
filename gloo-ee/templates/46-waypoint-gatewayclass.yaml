@@ -1,0 +1,26 @@
+{{/*
+  This is nearly an identical copy of 43-gatewayparameters.
+  The differences are:
+  * name is gloo-waypoint
+  * conditional on waypointEnabled
+  * critical annotation that tells Istio's zTunnel to use PROXY on our special port.
+*/}}
+{{- if $.Values.gloo.kubeGateway.enabled -}}
+{{- if $.Values.ambient.waypoint.enabled -}}
+kind: GatewayClass
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  annotations:
+    ambient.istio.io/waypoint-inbound-binding: PROXY/15088
+  labels:
+    {{- include "gloo-gateway.constLabels" . | nindent 4 }}
+  name: gloo-waypoint
+spec:
+  controllerName: solo.io/gloo-gateway
+  parametersRef:
+    group: gateway.gloo.solo.io
+    kind: GatewayParameters
+    name: gloo-waypoint
+    namespace: {{ .Release.Namespace }}
+{{- end }}{{/* if $.Values.ambient.waypoint.enabled */}}
+{{- end }}{{/* if $.Values.gloo.kubeGateway.enabled */}}
