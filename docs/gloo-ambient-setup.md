@@ -235,27 +235,13 @@ kubectl rollout status ds/ztunnel -n istio-system
 
 > ⚠️ The helm manifests currently in this repo are temporary/private.
 
-First, generate a license key
-
-```bash
-if [ -n "$GLOO_MESH_LICENSE_KEY" ]; then
-	echo Already have $GLOO_MESH_LICENSE_KEY
-else
-	git clone git@github.com:solo-io/licensing /tmp/gloo-licensing/
-	pushd /tmp/gloo-licensing/
-	GLOO_MESH_LICENSE_KEY=$(go run pkg/cmd/genlicense/main.go -product gloo-gateway -enterprise=true -days=365 | sed -n 2p)
-	popd
-	echo GLOO_MESH_LICENSE_KEY=$GLOO_MESH_LICENSE_KEY
-fi
-```
-
-Next, run the install:
+Run the install:
 
 ```bash
 helm upgrade --install \
   -n gloo-system gloo --create-namespace \
   ./gloo-ee/ -f ./gloo-ee/values-waypoint.yaml \
-  --set license_key=$GLOO_MESH_LICENSE_KEY
+  --set license_key=foobar # can use $GLOO_MESH_LICENSE_KEY if you want
 ```
 
 Add waypoint pod anti-affinity to the Waypoint GatewayParameters
