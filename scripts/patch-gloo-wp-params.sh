@@ -11,7 +11,7 @@ kubectl patch GatewayParameters gloo-waypoint -n gloo-system --type='merge' --pa
                   "labelSelector": {
                     "matchExpressions": [
                       {
-                        "key": "service.istio.io/canonical-name",
+                        "key": "gateway.networking.k8s.io/gateway-name",
                         "operator": "In",
                         "values": [
                           "waypoint"
