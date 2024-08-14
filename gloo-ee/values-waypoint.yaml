@@ -19,3 +19,16 @@ gloo:
         distrolessDigest: ""
         fipsDigest: ""
         fipsDistrolessDigest: ""
+
+global:
+  extensions:
+    extAuth:
+      enabled: false
+    rateLimit:
+      enabled: false
+
+observability:
+  enabled: false
+
+prometheus:
+  enabled: false
