@@ -10,6 +10,10 @@ gloo:
 
   gloo:
     deployment:
+      customEnv:
+        # The waypoint translator is disabled by default, so must explicitly enable it
+        - name: ENABLE_WAYPOINTS
+          value: "true"
       image:
         pullPolicy: Always
         repository: gloo-ee
