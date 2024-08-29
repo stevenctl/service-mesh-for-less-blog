@@ -17,7 +17,9 @@ gloo:
       image:
         pullPolicy: Always
         repository: gloo-ee
-        tag: PR-6666
+        # the PR tag has latest/what's merging, but may contain a bug that duplicates RBAC filters (up to 255x!)
+        # tag: PR-6666
+        tag: slandow/gloo-ee:authz-perf
         # actually respect the tag
         digest: ""
         distrolessDigest: ""
